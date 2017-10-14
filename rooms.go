@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/tidwall/gjson"
 	"io/ioutil"
+	"log"
 	"net/http"
 	neturl "net/url"
-	"sort"
 	"time"
 )
 
@@ -99,13 +99,11 @@ func init() {
 	for i := range Departments {
 		dep := &Departments[i]
 
-		fmt.Println("Loading rooms for", dep.Name)
+		log.Printf("Loading rooms for %s", dep.Name)
 		dep.loadLectures()
-
-		fmt.Println(dep.Rooms)
 	}
 
-	fmt.Println("Loaded rooms")
+	log.Println("Loaded rooms")
 }
 
 func (dep *Department) loadLectures() {
@@ -185,8 +183,6 @@ func (dep *Department) FindFreeRooms(t time.Time) []FreeRoom {
 	for _, room := range rooms {
 		var freeUntil time.Time
 		var freeSince time.Time
-
-		fmt.Println(room.Name)
 
 		if len(room.Lectures) > 0 {
 			if t.Before(room.Lectures[0].StartTime) {
