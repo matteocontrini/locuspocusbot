@@ -2,10 +2,17 @@ package main
 
 import (
 	"fmt"
+	"github.com/pelletier/go-toml"
 	"gopkg.in/telegram-bot-api.v4"
 	"log"
 	"time"
 )
+
+var conf Config
+
+type Config struct {
+	BotToken string
+}
 
 type FreeRoomText struct {
 	FreeRoom
@@ -27,8 +34,28 @@ func (g *GroupedFreeRoom) AddFreeFuture(room FreeRoom, text string) {
 	g.FreeFuture = append(g.FreeFuture, r)
 }
 
+func loadConfig() error {
+	t, err := toml.LoadFile("config/config.toml")
+
+	if err != nil {
+		return err
+	}
+
+	return t.Unmarshal(&conf)
+}
+
+func init() {
+	log.Println("Loading config")
+
+	if err := loadConfig(); err != nil {
+		panic(err)
+	}
+
+	log.Println("Loaded config")
+}
+
 func main() {
-	bot, err := tgbotapi.NewBotAPI("431023270:AAHiWdYW5Bamkw5fpwssrNbgCus1pmpJO84")
+	bot, err := tgbotapi.NewBotAPI(conf.BotToken)
 
 	if err != nil {
 		log.Panic(err)

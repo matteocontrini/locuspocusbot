@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/pelletier/go-toml"
+  packages = ["."]
+  revision = "16398bac157da96aa88f98a2df640c7f32af1da2"
+  version = "v1.0.1"
+
+[[projects]]
   name = "github.com/technoweenie/multipartstreamer"
   packages = ["."]
   revision = "a90a01d73ae432e2611d178c18367fbaa13e0154"
@@ -28,6 +34,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "51cf1886ab55ad21191970915ad2fe3827d2c060a1b34057463d96d5c4713b51"
+  inputs-digest = "470c4dc33366ec87ce7836c860028285da93e6eb6cdf27f23a6d71f10aedf41d"
   solver-name = "gps-cdcl"
   solver-version = 1
