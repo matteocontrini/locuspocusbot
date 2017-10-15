@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/robfig/cron"
 	"github.com/tidwall/gjson"
 	"io/ioutil"
 	"log"
@@ -95,15 +96,23 @@ var Departments []Department = []Department{
 }
 
 func init() {
-	// For each department, load the lectures
-	for i := range Departments {
-		dep := &Departments[i]
+	load := func() {
+		// For each department, load the lectures
+		for i := range Departments {
+			dep := &Departments[i]
 
-		log.Printf("Loading rooms for %s", dep.Name)
-		dep.loadLectures()
+			log.Printf("Loading rooms for %s", dep.Name)
+			dep.loadLectures()
+		}
+
+		log.Println("Loaded rooms")
 	}
 
-	log.Println("Loaded rooms")
+	load()
+
+	c := cron.New()
+	c.AddFunc("@hourly", load)
+	c.Start()
 }
 
 func (dep *Department) loadLectures() {
@@ -112,6 +121,7 @@ func (dep *Department) loadLectures() {
 	// Format date as e.g. 13-10-2017
 	now := time.Now()
 	date := fmt.Sprintf("%02d-%02d-%04d", now.Day(), now.Month(), now.Year())
+	date = "13-10-2017"
 
 	data := neturl.Values{
 		"form-type": {"rooms"},

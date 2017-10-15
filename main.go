@@ -3,8 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/pelletier/go-toml"
-	"gopkg.in/telegram-bot-api.v4"
+	tg "gopkg.in/telegram-bot-api.v4"
 	"log"
+	"strings"
 	"time"
 )
 
@@ -54,8 +55,11 @@ func init() {
 	log.Println("Loaded config")
 }
 
+var bot *tg.BotAPI
+
 func main() {
-	bot, err := tgbotapi.NewBotAPI(conf.BotToken)
+	var err error
+	bot, err = tg.NewBotAPI(conf.BotToken)
 
 	if err != nil {
 		log.Panic(err)
@@ -65,37 +69,96 @@ func main() {
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
-	u := tgbotapi.NewUpdate(0)
+	u := tg.NewUpdate(0)
 	u.Timeout = 10
 
 	updates, err := bot.GetUpdatesChan(u)
 
 	for update := range updates {
-		if update.Message == nil {
-			continue
+		if update.Message != nil {
+			handleMessage(bot, &update)
+		} else if update.CallbackQuery != nil {
+			handleCallbackQuery(bot, &update)
 		}
+	}
+}
 
-		log.Printf("<%d> %s", update.Message.From.ID, update.Message.Text)
+func handleMessage(bot *tg.BotAPI, update *tg.Update) {
+	log.Printf("<%d> %s", update.Message.Chat.ID, update.Message.Text)
 
-		grouped := getFreeRoms()
+	sendRooms(update.Message.Chat.ID)
+}
 
-		out := ""
+func handleCallbackQuery(bot *tg.BotAPI, update *tg.Update) {
+	data := update.CallbackQuery.Data
+	log.Printf("<%d> %s", update.CallbackQuery.From.ID, data)
+
+	parts := strings.Split(data, ";")
+
+	if parts[0] == "free" && parts[1] == "povo" {
+		group := parts[2]
+
+		if group == "now" {
+			editRoomsMessage(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, "now")
+		} else if group == "future" {
+			editRoomsMessage(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, "future")
+		}
+	}
+}
+
+func sendRooms(chatId int64) {
+	editRoomsMessage(chatId, -1, "now")
+}
+
+func editRoomsMessage(chatId int64, mid int, group string) {
+	now := time.Now()
+	// location, _ := time.LoadLocation("Europe/Rome")
+	// now = time.Date(2017, 10, 13, 11, 0, 0, 0, location)
+
+	grouped := getFreeRoms(now)
+
+	out := fmt.Sprintf("<strong>Aule libere alle %02d:%02d</strong>\n\n", now.Hour(), now.Minute())
+
+	if group == "now" {
 		for _, r := range grouped.FreeNow {
-			out += fmt.Sprintf("✅ <strong>%s</strong>: %s\n", r.Name, r.Text)
+			out += fmt.Sprintf("✳️ <strong>%s</strong>: %s\n", r.Name, r.Text)
 		}
-
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, out)
-		msg.ParseMode = "HTML"
-
-		bot.Send(msg)
-
-		out = ""
+	} else {
 		for _, r := range grouped.FreeFuture {
 			out += fmt.Sprintf("❌ <strong>%s</strong>: %s\n", r.Name, r.Text)
 		}
+	}
 
-		msg = tgbotapi.NewMessage(update.Message.Chat.ID, out)
+	if mid != -1 {
+		msg := tg.NewEditMessageText(chatId, mid, out)
+
 		msg.ParseMode = "HTML"
+		markup := tg.NewInlineKeyboardMarkup(
+			tg.NewInlineKeyboardRow(
+				tg.NewInlineKeyboardButtonData("✅ Libere adesso", "free;povo;now"),
+				tg.NewInlineKeyboardButtonData("Libere dopo", "free;povo;future"),
+			),
+			tg.NewInlineKeyboardRow(
+				tg.NewInlineKeyboardButtonData("🔄 Aggiorna", "free;povo;now"),
+			),
+		)
+
+		msg.ReplyMarkup = &markup
+
+		bot.Send(msg)
+	} else {
+		msg := tg.NewMessage(chatId, out)
+
+		msg.ParseMode = "HTML"
+		msg.ReplyMarkup = tg.NewInlineKeyboardMarkup(
+			tg.NewInlineKeyboardRow(
+				tg.NewInlineKeyboardButtonData("✅ Libere adesso", "free;povo;now"),
+				tg.NewInlineKeyboardButtonData("Libere dopo", "free;povo;future"),
+			),
+			tg.NewInlineKeyboardRow(
+				tg.NewInlineKeyboardButtonData("🔄 Aggiorna", "free;povo;now"),
+			),
+		)
 
 		bot.Send(msg)
 	}
@@ -105,10 +168,7 @@ func formatHour(t time.Time) string {
 	return fmt.Sprintf("%02d:%02d", t.Hour(), t.Minute())
 }
 
-func getFreeRoms() GroupedFreeRoom {
-	location, _ := time.LoadLocation("Europe/Rome")
-	t := time.Date(2017, 10, 13, 11, 0, 0, 0, location)
-
+func getFreeRoms(t time.Time) GroupedFreeRoom {
 	rooms := Departments[0].FindFreeRooms(t)
 
 	var grouped GroupedFreeRoom
