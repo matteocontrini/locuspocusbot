@@ -138,7 +138,7 @@ func editRoomsMessage(chatId int64, mid int, group string) {
 		msg.ParseMode = "HTML"
 		markup := tg.NewInlineKeyboardMarkup(
 			tg.NewInlineKeyboardRow(
-				tg.NewInlineKeyboardButtonData("✅ Libere adesso", "free;povo;now"),
+				tg.NewInlineKeyboardButtonData("✅ Libere", "free;povo;now"),
 				tg.NewInlineKeyboardButtonData("Occupate", "free;povo;future"),
 			),
 		)
