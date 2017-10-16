@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	neturl "net/url"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -162,6 +163,15 @@ func (dep *Department) loadLectures() {
 		room.Name = strings.TrimPrefix(room.Name, "Aula")
 		room.Name = strings.TrimSpace(room.Name)
 		room.Name = strings.ToUpper(room.Name)
+
+		re := regexp.MustCompile(`[A-B]{1}[0-9]{3}`)
+		match := re.FindString(room.Name)
+
+		if match != "" {
+			room.Name = match
+		} else {
+			return true
+		}
 
 		rooms = append(rooms, room)
 

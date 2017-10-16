@@ -197,7 +197,7 @@ func getFreeRoms(t time.Time) GroupedFreeRoom {
 				if room.FreeUntil.IsZero() {
 					text += fmt.Sprintf(" in poi")
 				} else {
-					text += fmt.Sprintf(" fino alle %s", formatHour(room.FreeUntil))
+					text += fmt.Sprintf(" alle %s", formatHour(room.FreeUntil))
 				}
 
 				grouped.AddFreeFuture(room, text)
