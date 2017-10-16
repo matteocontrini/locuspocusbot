@@ -116,14 +116,17 @@ func editRoomsMessage(chatId int64, mid int, group string) {
 	// now = time.Date(2017, 10, 13, 11, 0, 0, 0, location)
 
 	grouped := getFreeRoms(now)
-
-	out := fmt.Sprintf("<strong>Aule libere alle %02d:%02d</strong>\n\n", now.Hour(), now.Minute())
+	var out string
 
 	if group == "now" {
+		out += fmt.Sprintf("<strong>Aule libere alle %02d:%02d</strong>\n\n", now.Hour(), now.Minute())
+
 		for _, r := range grouped.FreeNow {
 			out += fmt.Sprintf("✳️ <strong>%s</strong>: %s\n", r.Name, r.Text)
 		}
 	} else {
+		out += fmt.Sprintf("<strong>Aule occupate alle %02d:%02d</strong>\n\n", now.Hour(), now.Minute())
+
 		for _, r := range grouped.FreeFuture {
 			out += fmt.Sprintf("❌ <strong>%s</strong>: %s\n", r.Name, r.Text)
 		}
@@ -136,10 +139,7 @@ func editRoomsMessage(chatId int64, mid int, group string) {
 		markup := tg.NewInlineKeyboardMarkup(
 			tg.NewInlineKeyboardRow(
 				tg.NewInlineKeyboardButtonData("✅ Libere adesso", "free;povo;now"),
-				tg.NewInlineKeyboardButtonData("Libere dopo", "free;povo;future"),
-			),
-			tg.NewInlineKeyboardRow(
-				tg.NewInlineKeyboardButtonData("🔄 Aggiorna", "free;povo;now"),
+				tg.NewInlineKeyboardButtonData("Occupate", "free;povo;future"),
 			),
 		)
 
@@ -152,11 +152,8 @@ func editRoomsMessage(chatId int64, mid int, group string) {
 		msg.ParseMode = "HTML"
 		msg.ReplyMarkup = tg.NewInlineKeyboardMarkup(
 			tg.NewInlineKeyboardRow(
-				tg.NewInlineKeyboardButtonData("✅ Libere adesso", "free;povo;now"),
-				tg.NewInlineKeyboardButtonData("Libere dopo", "free;povo;future"),
-			),
-			tg.NewInlineKeyboardRow(
-				tg.NewInlineKeyboardButtonData("🔄 Aggiorna", "free;povo;now"),
+				tg.NewInlineKeyboardButtonData("✅ Libere", "free;povo;now"),
+				tg.NewInlineKeyboardButtonData("Occupate", "free;povo;future"),
 			),
 		)
 
