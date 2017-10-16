@@ -160,10 +160,6 @@ func (dep *Department) loadLectures() {
 			return true
 		}
 
-		room.Name = strings.TrimPrefix(room.Name, "Aula")
-		room.Name = strings.TrimSpace(room.Name)
-		room.Name = strings.ToUpper(room.Name)
-
 		re := regexp.MustCompile(`[A-B]{1}[0-9]{3}`)
 		match := re.FindString(room.Name)
 
