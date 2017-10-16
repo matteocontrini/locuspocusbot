@@ -121,7 +121,6 @@ func (dep *Department) loadLectures() {
 	// Format date as e.g. 13-10-2017
 	now := time.Now()
 	date := fmt.Sprintf("%02d-%02d-%04d", now.Day(), now.Month(), now.Year())
-	date = "13-10-2017"
 
 	data := neturl.Values{
 		"form-type": {"rooms"},
