@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	neturl "net/url"
+	"strings"
 	"time"
 )
 
@@ -153,6 +154,14 @@ func (dep *Department) loadLectures() {
 			ID:   key.String(),
 			Name: value.Get("room_name").String(),
 		}
+
+		if strings.HasPrefix(room.Name, "LD") {
+			return true
+		}
+
+		room.Name = strings.TrimPrefix(room.Name, "Aula")
+		room.Name = strings.TrimSpace(room.Name)
+		room.Name = strings.ToUpper(room.Name)
 
 		rooms = append(rooms, room)
 
