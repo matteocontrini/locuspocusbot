@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"sort"
 	"strings"
 	"time"
 
@@ -232,6 +233,22 @@ func getFreeRoms(t time.Time) GroupedFreeRoom {
 			}
 		}
 	}
+
+	sort.Slice(grouped.FreeNow, func(i, j int) bool {
+		if grouped.FreeNow[i].FreeUntil.IsZero() {
+			return true
+		}
+
+		if grouped.FreeNow[j].FreeUntil.IsZero() {
+			return false
+		}
+
+		return grouped.FreeNow[i].FreeUntil.After(grouped.FreeNow[j].FreeUntil)
+	})
+
+	sort.Slice(grouped.FreeFuture, func(i, j int) bool {
+		return grouped.FreeFuture[i].FreeSince.Before(grouped.FreeFuture[j].FreeSince)
+	})
 
 	return grouped
 }
