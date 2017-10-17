@@ -71,24 +71,32 @@ type EditMessageRequest struct {
 }
 
 type MessageRequest struct {
-	ChatID      int64  `json:"chat_id"`
-	Text        string `json:"text"`
-	ParseMode   string `json:"parse_mode,omitempty"`
-	ReplyMarkup ReplyMarkup
+	ChatID                int64  `json:"chat_id"`
+	Text                  string `json:"text"`
+	ParseMode             string `json:"parse_mode,omitempty"`
+	ReplyMarkup           ReplyMarkup
+	DisableWebPagePreview bool `json:"disable_web_page_preview,omitempty"`
 }
 
 func (u *MessageRequest) MarshalJSON() ([]byte, error) {
-	serialized, err := u.ReplyMarkup.Serialize()
+	var serialized string
 
-	if err != nil {
-		return nil, err
+	if u.ReplyMarkup == nil {
+		serialized = ""
+	} else {
+		var err error
+		serialized, err = u.ReplyMarkup.Serialize()
+
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// http://choly.ca/post/go-json-marshalling/
 	type Alias MessageRequest
 
 	return json.Marshal(&struct {
-		ReplyMarkup string `json:"reply_markup"`
+		ReplyMarkup string `json:"reply_markup,omitempty"`
 		*Alias
 	}{
 		ReplyMarkup: serialized,
@@ -97,17 +105,24 @@ func (u *MessageRequest) MarshalJSON() ([]byte, error) {
 }
 
 func (u *EditMessageRequest) MarshalJSON() ([]byte, error) {
-	serialized, err := u.ReplyMarkup.Serialize()
+	var serialized string
 
-	if err != nil {
-		return nil, err
+	if len(u.ReplyMarkup.InlineKeyboard) == 0 {
+		serialized = ""
+	} else {
+		var err error
+		serialized, err = u.ReplyMarkup.Serialize()
+
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// http://choly.ca/post/go-json-marshalling/
 	type Alias EditMessageRequest
 
 	return json.Marshal(&struct {
-		ReplyMarkup string `json:"reply_markup"`
+		ReplyMarkup string `json:"reply_markup,omitempty"`
 		*Alias
 	}{
 		ReplyMarkup: serialized,
