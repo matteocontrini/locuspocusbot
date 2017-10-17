@@ -83,10 +83,23 @@ func main() {
 func handleMessage(message *tg.Message) {
 	log.Printf("<%d> %s", message.Chat.ID, message.Text)
 
-	sendRooms(message.Chat.ID)
-}
+	if message.Text == "/start" {
+		msg := tg.MessageRequest{
+			ChatID:                message.Chat.ID,
+			Text:                  "Ciao! 🤓\n\nSono *LocusPocus* e ti posso aiutare a trovare le aule libere presso il Polo Ferrari dell'Università di Trento 🎓\n\nScrivimi /povo (o qualsiasi altra cosa) per ottenere la lista delle aule libere.\n\n[Codice sorgente](https://github.com/matteocontrini/locuspocusbot)",
+			ParseMode:             "Markdown",
+			DisableWebPagePreview: true,
+		}
 
-// TODO: answerCallbackQuery
+		err := bot.Send(&msg)
+
+		if err != nil {
+			log.Println(err)
+		}
+	} else {
+		sendRooms(message.Chat.ID)
+	}
+}
 
 func handleCallbackQuery(query *tg.CallbackQuery) {
 	data := query.Data
