@@ -100,6 +100,18 @@ func handleMessage(message *tg.Message) {
 		if err != nil {
 			log.Println(err)
 		}
+	} else if message.Text == "/aiuto" {
+		msg := tg.MessageRequest{
+			ChatID:    message.Chat.ID,
+			Text:      "*LocusPocus* è il bot per controllare la disponibilità delle aule presso il Polo Ferrari dell'Università di Trento 🎓\n\nScrivi /povo per ottenere la lista delle aule libere.\n\n[Codice sorgente](https://github.com/matteocontrini/locuspocusbot)",
+			ParseMode: "Markdown",
+		}
+
+		err := bot.Send(&msg)
+
+		if err != nil {
+			log.Println(err)
+		}
 	} else {
 		sendRooms(message.Chat.ID)
 	}
