@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/robfig/cron"
-	"github.com/tidwall/gjson"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,6 +9,9 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/robfig/cron"
+	"github.com/tidwall/gjson"
 )
 
 type Department struct {

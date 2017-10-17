@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/pelletier/go-toml"
-	tg "gopkg.in/telegram-bot-api.v4"
 	"log"
 	"strings"
 	"time"
+
+	"github.com/matteocontrini/locuspocusbot/tg"
+	"github.com/pelletier/go-toml"
 )
 
 var conf Config
@@ -55,43 +56,41 @@ func init() {
 	log.Println("Loaded config")
 }
 
-var bot *tg.BotAPI
+var bot *tg.Bot
 
 func main() {
 	var err error
-	bot, err = tg.NewBotAPI(conf.BotToken)
+	bot, err = tg.NewBot(conf.BotToken)
 
 	if err != nil {
 		log.Panic(err)
 	}
 
-	// bot.Debug = true
+	log.Printf("Authorized on account @%s", bot.Me.Username)
 
-	log.Printf("Authorized on account %s", bot.Self.UserName)
-
-	u := tg.NewUpdate(0)
-	u.Timeout = 10
-
-	updates, err := bot.GetUpdatesChan(u)
+	updates := make(chan tg.Update, 100)
+	bot.GetUpdates(updates, 10*time.Second)
 
 	for update := range updates {
 		if update.Message != nil {
-			handleMessage(bot, &update)
+			handleMessage(update.Message)
 		} else if update.CallbackQuery != nil {
-			handleCallbackQuery(bot, &update)
+			handleCallbackQuery(update.CallbackQuery)
 		}
 	}
 }
 
-func handleMessage(bot *tg.BotAPI, update *tg.Update) {
-	log.Printf("<%d> %s", update.Message.Chat.ID, update.Message.Text)
+func handleMessage(message *tg.Message) {
+	log.Printf("<%d> %s", message.Chat.ID, message.Text)
 
-	sendRooms(update.Message.Chat.ID)
+	sendRooms(message.Chat.ID)
 }
 
-func handleCallbackQuery(bot *tg.BotAPI, update *tg.Update) {
-	data := update.CallbackQuery.Data
-	log.Printf("<%d> %s", update.CallbackQuery.From.ID, data)
+// TODO: answerCallbackQuery
+
+func handleCallbackQuery(query *tg.CallbackQuery) {
+	data := query.Data
+	log.Printf("<%d> %s", query.From.ID, data)
 
 	parts := strings.Split(data, ";")
 
@@ -99,10 +98,17 @@ func handleCallbackQuery(bot *tg.BotAPI, update *tg.Update) {
 		group := parts[2]
 
 		if group == "now" {
-			editRoomsMessage(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, "now")
+			editRoomsMessage(query.Message.Chat.ID, query.Message.MessageID, "now")
 		} else if group == "future" {
-			editRoomsMessage(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.MessageID, "future")
+			editRoomsMessage(query.Message.Chat.ID, query.Message.MessageID, "future")
 		}
+
+		answ := tg.AnswerCallbackQueryRequest{
+			CallbackQueryId: query.ID,
+			Text:            "Aggiornato alle " + formatHour(time.Now()),
+		}
+
+		bot.Send(&answ)
 	}
 }
 
@@ -112,11 +118,11 @@ func sendRooms(chatId int64) {
 
 func editRoomsMessage(chatId int64, mid int, group string) {
 	now := time.Now()
-	// location, _ := time.LoadLocation("Europe/Rome")
-	// now = time.Date(2017, 10, 13, 11, 0, 0, 0, location)
 
 	grouped := getFreeRoms(now)
 	var out string
+	var btn1 tg.InlineKeyboardButton
+	var btn2 tg.InlineKeyboardButton
 
 	if group == "now" {
 		out += fmt.Sprintf("<strong>Aule libere alle %02d:%02d</strong>\n\n", now.Hour(), now.Minute())
@@ -124,40 +130,52 @@ func editRoomsMessage(chatId int64, mid int, group string) {
 		for _, r := range grouped.FreeNow {
 			out += fmt.Sprintf("✳️ <strong>%s</strong>: %s\n", r.Name, r.Text)
 		}
+
+		btn1 = tg.InlineKeyboardButton{"✅ Libere", "free;povo;now"}
+		btn2 = tg.InlineKeyboardButton{"Occupate", "free;povo;future"}
 	} else {
 		out += fmt.Sprintf("<strong>Aule occupate alle %02d:%02d</strong>\n\n", now.Hour(), now.Minute())
 
 		for _, r := range grouped.FreeFuture {
 			out += fmt.Sprintf("❌ <strong>%s</strong>: %s\n", r.Name, r.Text)
 		}
+
+		btn1 = tg.InlineKeyboardButton{"Libere", "free;povo;now"}
+		btn2 = tg.InlineKeyboardButton{"✅ Occupate", "free;povo;future"}
 	}
 
+	markup := tg.InlineKeyboardMarkup{
+		InlineKeyboard: [][]tg.InlineKeyboardButton{
+			{
+				btn1,
+				btn2,
+			},
+		},
+	}
+
+	var msg interface{}
+
 	if mid != -1 {
-		msg := tg.NewEditMessageText(chatId, mid, out)
-
-		msg.ParseMode = "HTML"
-		markup := tg.NewInlineKeyboardMarkup(
-			tg.NewInlineKeyboardRow(
-				tg.NewInlineKeyboardButtonData("✅ Libere", "free;povo;now"),
-				tg.NewInlineKeyboardButtonData("Occupate", "free;povo;future"),
-			),
-		)
-
-		msg.ReplyMarkup = &markup
-
-		bot.Send(msg)
+		msg = &tg.EditMessageRequest{
+			ChatID:      chatId,
+			MessageID:   mid,
+			Text:        out,
+			ParseMode:   "HTML",
+			ReplyMarkup: markup,
+		}
 	} else {
-		msg := tg.NewMessage(chatId, out)
+		msg = &tg.MessageRequest{
+			ChatID:      chatId,
+			Text:        out,
+			ParseMode:   "HTML",
+			ReplyMarkup: markup,
+		}
+	}
 
-		msg.ParseMode = "HTML"
-		msg.ReplyMarkup = tg.NewInlineKeyboardMarkup(
-			tg.NewInlineKeyboardRow(
-				tg.NewInlineKeyboardButtonData("✅ Libere", "free;povo;now"),
-				tg.NewInlineKeyboardButtonData("Occupate", "free;povo;future"),
-			),
-		)
+	err := bot.Send(msg)
 
-		bot.Send(msg)
+	if err != nil {
+		log.Println(err)
 	}
 }
 

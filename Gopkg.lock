@@ -14,12 +14,6 @@
   version = "v1"
 
 [[projects]]
-  name = "github.com/technoweenie/multipartstreamer"
-  packages = ["."]
-  revision = "a90a01d73ae432e2611d178c18367fbaa13e0154"
-  version = "v1.0.1"
-
-[[projects]]
   name = "github.com/tidwall/gjson"
   packages = ["."]
   revision = "5a69e67cfd8f6f9b0044ed49f5079d0eeed28653"
@@ -31,15 +25,9 @@
   packages = ["."]
   revision = "1731857f09b1f38450e2c12409748407822dc6be"
 
-[[projects]]
-  name = "gopkg.in/telegram-bot-api.v4"
-  packages = ["."]
-  revision = "0a57807db79efce7f6719fbb2c0e0f83fda79aec"
-  version = "v4.6"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f3e7f375933ed4faa671f69efad2e5bd0e855922e3aec6c1d15df7bdb78a42e9"
+  inputs-digest = "80956d20e38a27441f8e1763abc996e6c37e2132237b6780cdf7477b9e922371"
   solver-name = "gps-cdcl"
   solver-version = 1
