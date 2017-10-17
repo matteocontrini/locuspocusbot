@@ -74,7 +74,10 @@ func main() {
 
 	for update := range updates {
 		if update.Message != nil {
-			handleMessage(update.Message)
+			// Ignore non-text messages
+			if update.Message.Text != "" {
+				handleMessage(update.Message)
+			}
 		} else if update.CallbackQuery != nil {
 			handleCallbackQuery(update.CallbackQuery)
 		}
