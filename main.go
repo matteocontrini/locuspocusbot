@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/matteocontrini/locuspocusbot/tg"
+	"github.com/matteocontrini/go-tg"
 	"github.com/pelletier/go-toml"
 )
 

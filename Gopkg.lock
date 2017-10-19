@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/matteocontrini/go-tg"
+  packages = ["."]
+  revision = "fc54522c4fb4441e76fd375dbc70afe789479c2c"
+  version = "v0.1.0"
+
+[[projects]]
   name = "github.com/pelletier/go-toml"
   packages = ["."]
   revision = "16398bac157da96aa88f98a2df640c7f32af1da2"
@@ -28,6 +34,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "80956d20e38a27441f8e1763abc996e6c37e2132237b6780cdf7477b9e922371"
+  inputs-digest = "8bdadf5c1e0e15e936b4e4e6114c9ad07c2488237d22d9bdd616584f12c02a9b"
   solver-name = "gps-cdcl"
   solver-version = 1
