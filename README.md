@@ -1,4 +1,4 @@
-# locuspocusbot
+# locuspocusbot [![Build Status](https://travis-ci.org/matteocontrini/locuspocusbot.svg?branch=master)](https://travis-ci.org/matteocontrini/locuspocusbot)
 
 ### Configuration
 
