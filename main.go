@@ -90,7 +90,7 @@ func handleMessage(message *tg.Message) {
 	if message.Text == "/start" {
 		msg := tg.MessageRequest{
 			ChatID:                message.Chat.ID,
-			Text:                  "Ciao! 🤓\n\nSono *LocusPocus* e ti posso aiutare a trovare le aule libere presso il Polo Ferrari dell'Università di Trento 🎓\n\nScrivimi /povo (o qualsiasi altra cosa) per ottenere la lista delle aule libere.\n\n[Codice sorgente](https://github.com/matteocontrini/locuspocusbot)",
+			Text:                  "Ciao! 🤓\n\nSono *LocusPocus* e ti posso aiutare a trovare le aule libere presso il Polo Ferrari dell'Università di Trento 🎓\n\nScrivimi /povo (o qualsiasi altra cosa) per ottenere la lista delle aule libere.\n\nAltre info in /aiuto",
 			ParseMode:             "Markdown",
 			DisableWebPagePreview: true,
 		}
@@ -103,7 +103,7 @@ func handleMessage(message *tg.Message) {
 	} else if message.Text == "/aiuto" {
 		msg := tg.MessageRequest{
 			ChatID:    message.Chat.ID,
-			Text:      "*LocusPocus* è il bot per controllare la disponibilità delle aule presso il Polo Ferrari dell'Università di Trento 🎓\n\nScrivi /povo per ottenere la lista delle aule libere.\n\n[Codice sorgente](https://github.com/matteocontrini/locuspocusbot)",
+			Text:      "*LocusPocus* è il bot per controllare la disponibilità delle aule presso il Polo Ferrari dell'Università di Trento 🎓\n\nScrivi /povo per ottenere la lista delle aule libere.\n\nSviluppato da Matteo Contrini (@matteocontrini). Si ringraziano Alessandro Conti per il nome del bot e Dario Crisafulli per il logo.\n\n[Codice sorgente](https://github.com/matteocontrini/locuspocusbot)",
 			ParseMode: "Markdown",
 		}
 
