@@ -141,11 +141,11 @@ func handleCallbackQuery(query *tg.CallbackQuery) {
 	}
 }
 
-func sendRooms(chatId int64) {
-	editRoomsMessage(chatId, -1, "now")
+func sendRooms(chatID int64) {
+	editRoomsMessage(chatID, -1, "now")
 }
 
-func editRoomsMessage(chatId int64, mid int, group string) {
+func editRoomsMessage(chatID int64, mid int, group string) {
 	now := time.Now()
 
 	grouped := getFreeRoms(now, group)
@@ -160,8 +160,15 @@ func editRoomsMessage(chatId int64, mid int, group string) {
 			out += fmt.Sprintf("✳️ <strong>%s</strong>: %s\n", r.Name, r.Text)
 		}
 
-		btn1 = tg.InlineKeyboardButton{"✅ Libere", "free;povo;now"}
-		btn2 = tg.InlineKeyboardButton{"Occupate", "free;povo;future"}
+		btn1 = tg.InlineKeyboardButton{
+			Text:         "✅ Libere",
+			CallbackData: "free;povo;now",
+		}
+
+		btn2 = tg.InlineKeyboardButton{
+			Text:         "Occupate",
+			CallbackData: "free;povo;future",
+		}
 	} else {
 		out += fmt.Sprintf("<strong>Aule occupate alle %02d:%02d</strong>\n\n", now.Hour(), now.Minute())
 
@@ -169,8 +176,15 @@ func editRoomsMessage(chatId int64, mid int, group string) {
 			out += fmt.Sprintf("❌ <strong>%s</strong>: %s\n", r.Name, r.Text)
 		}
 
-		btn1 = tg.InlineKeyboardButton{"Libere", "free;povo;now"}
-		btn2 = tg.InlineKeyboardButton{"✅ Occupate", "free;povo;future"}
+		btn1 = tg.InlineKeyboardButton{
+			Text:         "Libere",
+			CallbackData: "free;povo;now",
+		}
+
+		btn2 = tg.InlineKeyboardButton{
+			Text:         "✅ Occupate",
+			CallbackData: "free;povo;future",
+		}
 	}
 
 	markup := tg.InlineKeyboardMarkup{
@@ -186,7 +200,7 @@ func editRoomsMessage(chatId int64, mid int, group string) {
 
 	if mid != -1 {
 		msg = &tg.EditMessageRequest{
-			ChatID:      chatId,
+			ChatID:      chatID,
 			MessageID:   mid,
 			Text:        out,
 			ParseMode:   "HTML",
@@ -194,7 +208,7 @@ func editRoomsMessage(chatId int64, mid int, group string) {
 		}
 	} else {
 		msg = &tg.MessageRequest{
-			ChatID:      chatId,
+			ChatID:      chatID,
 			Text:        out,
 			ParseMode:   "HTML",
 			ReplyMarkup: markup,

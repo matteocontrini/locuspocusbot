@@ -70,7 +70,7 @@ func (room *FreeRoom) IsFreeLimitedAt(t time.Time) bool {
 	}
 }
 
-var Departments []Department = []Department{
+var Departments = []Department{
 	Department{
 		ID:    "E0503",
 		Name:  "Povo",
@@ -161,6 +161,8 @@ func (dep *Department) loadLectures() {
 			return true
 		}
 
+		// Keep only the part of the string that is in the format "B107"
+		// Strips parentheses! (TODO: "aula pc" should be kept?)
 		re := regexp.MustCompile(`[A-B]{1}[0-9]{3}`)
 		match := re.FindString(room.Name)
 
