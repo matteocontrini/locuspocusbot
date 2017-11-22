@@ -1,5 +1,5 @@
 
-# Created by https://www.gitignore.io/api/go,windows
+# Created by https://www.gitignore.io/api/go,windows,visualstudiocode
 
 ### Go ###
 # Binaries for programs and plugins
@@ -38,6 +38,14 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.gitignore.io/api/go,windows
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history
+
+# End of https://www.gitignore.io/api/go,windows,visualstudiocode
 
 config/*

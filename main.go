@@ -148,7 +148,7 @@ func sendRooms(chatId int64) {
 func editRoomsMessage(chatId int64, mid int, group string) {
 	now := time.Now()
 
-	grouped := getFreeRoms(now)
+	grouped := getFreeRoms(now, group)
 	var out string
 	var btn1 tg.InlineKeyboardButton
 	var btn2 tg.InlineKeyboardButton
@@ -212,7 +212,7 @@ func formatHour(t time.Time) string {
 	return fmt.Sprintf("%02d:%02d", t.Hour(), t.Minute())
 }
 
-func getFreeRoms(t time.Time) GroupedFreeRoom {
+func getFreeRoms(t time.Time, group string) GroupedFreeRoom {
 	rooms := Departments[0].FindFreeRooms(t)
 
 	var grouped GroupedFreeRoom
@@ -236,12 +236,25 @@ func getFreeRoms(t time.Time) GroupedFreeRoom {
 					grouped.AddFreeNow(room, text)
 				}
 			} else {
-				text := fmt.Sprintf("Libera dalle %s", formatHour(room.FreeSince))
+				var text string
 
-				if room.FreeUntil.IsZero() {
-					text += fmt.Sprintf(" in poi")
+				if group == "now" {
+					text = fmt.Sprintf("Libera dalle %s", formatHour(room.FreeSince))
+
+					if room.FreeUntil.IsZero() {
+						text += fmt.Sprintf(" in poi")
+					} else {
+						text += fmt.Sprintf(" alle %s", formatHour(room.FreeUntil))
+					}
 				} else {
-					text += fmt.Sprintf(" alle %s", formatHour(room.FreeUntil))
+					if room.FreeUntil.IsZero() {
+						text = fmt.Sprintf("Libera dalle %s in poi", formatHour(room.FreeSince))
+					} else {
+						text = fmt.Sprintf("Libera ore %s - %s",
+							formatHour(room.FreeSince),
+							formatHour(room.FreeUntil),
+						)
+					}
 				}
 
 				grouped.AddFreeFuture(room, text)

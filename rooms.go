@@ -183,13 +183,13 @@ func (dep *Department) loadLectures() {
 			EndTime:   time.Unix(value.Get("timestamp_to").Int(), 0),
 		}
 
-		roomId := value.Get("CodiceAula").String()
+		roomID := value.Get("CodiceAula").String()
 
 		// Assign lecture to the correct room
 		for i := range rooms {
 			room := &rooms[i]
 
-			if room.ID == roomId {
+			if room.ID == roomID {
 				room.Lectures = append(room.Lectures, lecture)
 				break
 			}
