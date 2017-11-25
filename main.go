@@ -161,7 +161,7 @@ func editRoomsMessage(chatID int64, mid int, group string) {
 				out += fmt.Sprintf("✳️ <strong>%s</strong>: %s\n", r.Name, r.Text)
 			}
 		} else {
-			out += "Tutte le aule sono occupate."
+			out += "❌ Tutte le aule sono occupate."
 		}
 
 		btn1 = tg.InlineKeyboardButton{
@@ -181,7 +181,7 @@ func editRoomsMessage(chatID int64, mid int, group string) {
 				out += fmt.Sprintf("❌ <strong>%s</strong>: %s\n", r.Name, r.Text)
 			}
 		} else {
-			out += "Tutte le aule sono libere."
+			out += "✳️ Tutte le aule sono libere."
 		}
 
 		btn1 = tg.InlineKeyboardButton{
