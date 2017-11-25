@@ -156,8 +156,12 @@ func editRoomsMessage(chatID int64, mid int, group string) {
 	if group == "now" {
 		out += fmt.Sprintf("<strong>Aule libere alle %02d:%02d</strong>\n\n", now.Hour(), now.Minute())
 
-		for _, r := range grouped.FreeNow {
-			out += fmt.Sprintf("✳️ <strong>%s</strong>: %s\n", r.Name, r.Text)
+		if len(grouped.FreeNow) > 0 {
+			for _, r := range grouped.FreeNow {
+				out += fmt.Sprintf("✳️ <strong>%s</strong>: %s\n", r.Name, r.Text)
+			}
+		} else {
+			out += "Tutte le aule sono occupate."
 		}
 
 		btn1 = tg.InlineKeyboardButton{
@@ -172,8 +176,12 @@ func editRoomsMessage(chatID int64, mid int, group string) {
 	} else {
 		out += fmt.Sprintf("<strong>Aule occupate alle %02d:%02d</strong>\n\n", now.Hour(), now.Minute())
 
-		for _, r := range grouped.FreeFuture {
-			out += fmt.Sprintf("❌ <strong>%s</strong>: %s\n", r.Name, r.Text)
+		if len(grouped.FreeFuture) > 0 {
+			for _, r := range grouped.FreeFuture {
+				out += fmt.Sprintf("❌ <strong>%s</strong>: %s\n", r.Name, r.Text)
+			}
+		} else {
+			out += "Tutte le aule sono libere."
 		}
 
 		btn1 = tg.InlineKeyboardButton{
