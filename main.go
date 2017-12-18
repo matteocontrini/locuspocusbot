@@ -19,22 +19,36 @@ type Config struct {
 
 type FreeRoomText struct {
 	FreeRoom
-	Text string
+	Text      string
+	IsFreeNow bool
 }
 
-type GroupedFreeRoom struct {
+type GroupedRooms struct {
 	FreeNow    []FreeRoomText
 	FreeFuture []FreeRoomText
+	All        []*FreeRoomText
 }
 
-func (g *GroupedFreeRoom) AddFreeNow(room FreeRoom, text string) {
-	r := FreeRoomText{room, text}
+func (g *GroupedRooms) AddFreeNow(room FreeRoom, text string) {
+	r := FreeRoomText{
+		FreeRoom:  room,
+		Text:      text,
+		IsFreeNow: true,
+	}
+
 	g.FreeNow = append(g.FreeNow, r)
+	g.All = append(g.All, &r)
 }
 
-func (g *GroupedFreeRoom) AddFreeFuture(room FreeRoom, text string) {
-	r := FreeRoomText{room, text}
+func (g *GroupedRooms) AddFreeFuture(room FreeRoom, text string) {
+	r := FreeRoomText{
+		FreeRoom:  room,
+		Text:      text,
+		IsFreeNow: false,
+	}
+
 	g.FreeFuture = append(g.FreeFuture, r)
+	g.All = append(g.All, &r)
 }
 
 func loadConfig() error {
@@ -130,6 +144,8 @@ func handleCallbackQuery(query *tg.CallbackQuery) {
 			editRoomsMessage(query.Message.Chat.ID, query.Message.MessageID, "now")
 		} else if group == "future" {
 			editRoomsMessage(query.Message.Chat.ID, query.Message.MessageID, "future")
+		} else if group == "all" {
+			editRoomsMessage(query.Message.Chat.ID, query.Message.MessageID, "all")
 		}
 
 		answ := tg.AnswerCallbackQueryRequest{
@@ -152,6 +168,7 @@ func editRoomsMessage(chatID int64, mid int, group string) {
 	var out string
 	var btn1 tg.InlineKeyboardButton
 	var btn2 tg.InlineKeyboardButton
+	var btn3 tg.InlineKeyboardButton
 
 	if group == "now" {
 		out += fmt.Sprintf("<strong>Aule libere alle %02d:%02d</strong>\n\n", now.Hour(), now.Minute())
@@ -173,7 +190,12 @@ func editRoomsMessage(chatID int64, mid int, group string) {
 			Text:         "Occupate",
 			CallbackData: "free;povo;future",
 		}
-	} else {
+
+		btn3 = tg.InlineKeyboardButton{
+			Text:         "Tutte le aule",
+			CallbackData: "free;povo;all",
+		}
+	} else if group == "future" {
 		out += fmt.Sprintf("<strong>Aule occupate alle %02d:%02d</strong>\n\n", now.Hour(), now.Minute())
 
 		if len(grouped.FreeFuture) > 0 {
@@ -193,6 +215,36 @@ func editRoomsMessage(chatID int64, mid int, group string) {
 			Text:         "✅ Occupate",
 			CallbackData: "free;povo;future",
 		}
+
+		btn3 = tg.InlineKeyboardButton{
+			Text:         "Tutte le aule",
+			CallbackData: "free;povo;all",
+		}
+	} else {
+		out += fmt.Sprintf("<strong>Situazione aule alle %02d:%02d</strong>\n\n", now.Hour(), now.Minute())
+
+		for _, r := range grouped.All {
+			if r.IsFreeNow {
+				out += fmt.Sprintf("✳️ <strong>%s</strong>: %s\n", r.Name, r.Text)
+			} else {
+				out += fmt.Sprintf("❌ <strong>%s</strong>: %s\n", r.Name, r.Text)
+			}
+		}
+
+		btn1 = tg.InlineKeyboardButton{
+			Text:         "Libere",
+			CallbackData: "free;povo;now",
+		}
+
+		btn2 = tg.InlineKeyboardButton{
+			Text:         "Occupate",
+			CallbackData: "free;povo;future",
+		}
+
+		btn3 = tg.InlineKeyboardButton{
+			Text:         "✅ Tutte le aule",
+			CallbackData: "free;povo;all",
+		}
 	}
 
 	markup := tg.InlineKeyboardMarkup{
@@ -200,6 +252,9 @@ func editRoomsMessage(chatID int64, mid int, group string) {
 			{
 				btn1,
 				btn2,
+			},
+			{
+				btn3,
 			},
 		},
 	}
@@ -234,10 +289,10 @@ func formatHour(t time.Time) string {
 	return fmt.Sprintf("%02d:%02d", t.Hour(), t.Minute())
 }
 
-func getFreeRoms(t time.Time, group string) GroupedFreeRoom {
+func getFreeRoms(t time.Time, group string) GroupedRooms {
 	rooms := Departments[0].FindFreeRooms(t)
 
-	var grouped GroupedFreeRoom
+	var grouped GroupedRooms
 
 	for _, room := range rooms {
 		if room.IsFreeLimitedAt(t) {
