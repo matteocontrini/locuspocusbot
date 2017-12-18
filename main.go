@@ -355,5 +355,9 @@ func getFreeRoms(t time.Time, group string) GroupedRooms {
 		return grouped.FreeFuture[i].FreeSince.Before(grouped.FreeFuture[j].FreeSince)
 	})
 
+	sort.Slice(grouped.All, func(i, j int) bool {
+		return grouped.All[i].Name < grouped.All[j].Name
+	})
+
 	return grouped
 }
