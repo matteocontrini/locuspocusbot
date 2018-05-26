@@ -340,6 +340,10 @@ func getFreeRoms(t time.Time, group string) GroupedRooms {
 	}
 
 	sort.Slice(grouped.FreeNow, func(i, j int) bool {
+		if grouped.FreeNow[i].FreeUntil.IsZero() && grouped.FreeNow[j].FreeUntil.IsZero() {
+			return grouped.FreeNow[i].Name < grouped.FreeNow[j].Name
+		}
+
 		if grouped.FreeNow[i].FreeUntil.IsZero() {
 			return true
 		}
