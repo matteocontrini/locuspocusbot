@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2048
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocusPocusBot", "LocusPocusBot\LocusPocusBot.csproj", "{C8F7235C-97BF-4EDE-AE58-A087FF5D275D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C8F7235C-97BF-4EDE-AE58-A087FF5D275D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8F7235C-97BF-4EDE-AE58-A087FF5D275D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8F7235C-97BF-4EDE-AE58-A087FF5D275D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8F7235C-97BF-4EDE-AE58-A087FF5D275D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DD6B0652-F4BC-4E86-A14C-B848F50F6E80}
+	EndGlobalSection
+EndGlobal
