@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LocusPocusBot.Rooms\LocusPocusBot.Rooms.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="appsettings.example.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

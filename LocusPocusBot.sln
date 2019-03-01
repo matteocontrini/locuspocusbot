@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocusPocusBot", "LocusPocusBot\LocusPocusBot.csproj", "{C8F7235C-97BF-4EDE-AE58-A087FF5D275D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LocusPocusBot", "LocusPocusBot\LocusPocusBot.csproj", "{C8F7235C-97BF-4EDE-AE58-A087FF5D275D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocusPocusBot.Rooms", "LocusPocusBot.Rooms\LocusPocusBot.Rooms.csproj", "{7553FC3C-ACE0-421A-98DC-662DB1479544}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{C8F7235C-97BF-4EDE-AE58-A087FF5D275D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8F7235C-97BF-4EDE-AE58-A087FF5D275D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8F7235C-97BF-4EDE-AE58-A087FF5D275D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7553FC3C-ACE0-421A-98DC-662DB1479544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7553FC3C-ACE0-421A-98DC-662DB1479544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7553FC3C-ACE0-421A-98DC-662DB1479544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7553FC3C-ACE0-421A-98DC-662DB1479544}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

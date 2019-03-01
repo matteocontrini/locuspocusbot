@@ -65,6 +65,8 @@ namespace LocusPocusBot
 
         private void OnMessage(object sender, Telegram.Bot.Args.MessageEventArgs e)
         {
+            this.logger.LogInformation("<{0}> {1}", e.Message.Chat.Id, e.Message.Text);
+
             // Echo
             this.bot.SendTextMessageAsync(e.Message.Chat.Id, e.Message.Text);
         }
