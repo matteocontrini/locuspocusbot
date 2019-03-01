@@ -29,9 +29,13 @@ namespace LocusPocusBot.Rooms
 
         public static Department Povo { get; } = new Department("E0503", "Povo");
 
-        public List<RoomAvailbility> FindFreeRoomsAt(Instant instant)
+        public AvailabilityGroup[] FindFreeRoomsAt(Instant instant)
         {
-            List<RoomAvailbility> freeRooms = new List<RoomAvailbility>();
+            AvailabilityGroup[] groups = new AvailabilityGroup[]
+            {
+                new AvailabilityGroup(AvailabilityType.Free),
+                new AvailabilityGroup(AvailabilityType.Occupied)
+            };
 
             foreach (Room room in this.Rooms)
             {
@@ -139,10 +143,45 @@ namespace LocusPocusBot.Rooms
 
                 bool isFreeNow = interval.Contains(instant);
 
-                freeRooms.Add(new RoomAvailbility(room, interval, isFreeNow));
+                if (isFreeNow)
+                {
+                    groups[0].Rooms.Add(new RoomAvailability(room, interval));
+                }
+                else
+                {
+                    groups[1].Rooms.Add(new RoomAvailability(room, interval));
+                }
             } // rooms loop
 
-            return freeRooms;
+            // Sort free rooms
+            groups[0].Rooms.Sort((x, y) =>
+            {
+                // Sort rooms by name if free until the same time
+                if (!x.FreeInterval.HasEnd && !y.FreeInterval.HasEnd)
+                {
+                    return string.Compare(x.Name, y.Name);
+                }
+
+                if (!x.FreeInterval.HasEnd)
+                {
+                    return 1;
+                }
+
+                if (!y.FreeInterval.HasEnd)
+                {
+                    return -1;
+                }
+
+                return x.FreeInterval.End.CompareTo(y.FreeInterval.End);
+            });
+
+            // Sort occupied rooms
+            groups[1].Rooms.Sort((x, y) =>
+            {
+                return x.FreeInterval.Start.CompareTo(y.FreeInterval.Start);
+            });
+
+            return groups;
         }
     }
 }

@@ -5,7 +5,7 @@ namespace LocusPocusBot.Rooms
     /// <summary>
     /// Holds a room with the associated
     /// </summary>
-    public class RoomAvailbility
+    public class RoomAvailability
     {
         private Room room;
 
@@ -22,12 +22,7 @@ namespace LocusPocusBot.Rooms
         /// </summary>
         public Interval FreeInterval { get; set; }
 
-        /// <summary>
-        /// Whether the room is currently free
-        /// </summary>
-        public bool IsFreeNow { get; set; }
-
-        public RoomAvailbility(Room room, Interval freeInterval, bool isFreeNow)
+        public RoomAvailability(Room room, Interval freeInterval)
         {
             this.room = room;
             this.FreeInterval = freeInterval;
