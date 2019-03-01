@@ -16,5 +16,10 @@ namespace LocusPocusBot.Rooms
             this.Name = name;
             this.Lectures = new List<Lecture>();
         }
+
+        public override string ToString()
+        {
+            return $"[{this.Name}] {this.Lectures.Count} lectures";
+        }
     }
 }
