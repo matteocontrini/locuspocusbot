@@ -40,15 +40,14 @@ namespace LocusPocusBot.Rooms
             foreach (Room room in this.Rooms)
             {
                 // At the end of a long journey, this interval will contain
-                // the start/end instants when the room is free, based on the input time
-                Interval interval = new Interval();
+                // the start/end instants when the room is free, based on the input time.
+                // By default, a room is free all day
+                Interval interval = new Interval(start: null, end: null);
 
                 // No lectures today in this room
                 if (room.Lectures.Count == 0)
                 {
-                    // The room is free all-day.
-                    // Create an interval with undefined from/to
-                    interval = new Interval();
+                    // The room is free all-day
                 }
                 // The first lecture still hasn't started
                 else if (instant < room.Lectures[0].StartInstant)
@@ -86,10 +85,10 @@ namespace LocusPocusBot.Rooms
                         // could be free at EndInstant (e.g. at 12:30), if there are no lectures after it
                         if (instant >= lecture.StartInstant && instant < lecture.EndInstant)
                         {
-                            // We're at CURRENT, we need to loop through the next lectures,
+                            // We're at "current lecture", we need to loop through the next lectures,
                             // until we find a FREE slot
-                            // [ ... ] [ current lecture ] [ FREE ] [ lecture ]
-                            // [ ... ] [ current lecture ] [ .... ] [ FREE ] [ lecture ]
+                            // [ ... ] [ current lecture ] [ FREE ] [ optional lecture ]
+                            // [ ... ] [ current lecture ] [ .... ] [ FREE ] [ optional lecture ]
                             for (int j = i + 1; j < room.Lectures.Count; j++)
                             {
                                 // If this condition is true, we've found a gap between two lectures,
