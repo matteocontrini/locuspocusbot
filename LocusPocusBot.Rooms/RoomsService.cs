@@ -71,28 +71,19 @@ namespace LocusPocusBot.Rooms
             {
                 string roomName = item.Value["room_name"].ToString();
 
-                // Skip "laboratori didattici"
-                if (roomName.StartsWith("LD"))
-                {
-                    continue;
-                }
-
                 // Keep only the name of the room, like "B107"
                 // Strips parentheses, bla...
                 Match match = Regex.Match(roomName, "[A-B]{1}[0-9]{3}");
 
-                if (match != null)
+                if (match.Success)
                 {
-                    roomName = match.Value;
+                    Room room = new Room(item.Key, match.Value);
+                    rooms.Add(room);
                 }
                 else
                 {
                     continue;
                 }
-
-                Room room = new Room(item.Key, roomName);
-
-                rooms.Add(room);
             }
 
             return rooms;
@@ -115,7 +106,12 @@ namespace LocusPocusBot.Rooms
                 string roomId = item["CodiceAula"].ToString();
 
                 // Assign the parsed lecture to the room
-                rooms.Find(x => x.Key == roomId).Lectures.Add(lec);
+                Room r = rooms.Find(x => x.Key == roomId);
+
+                if (r != null)
+                {
+                    r.Lectures.Add(lec);
+                }
             }
         }
     }
