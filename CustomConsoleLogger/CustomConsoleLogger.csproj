@@ -2,12 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="NodaTime" Version="2.4.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
   </ItemGroup>
 
 </Project>

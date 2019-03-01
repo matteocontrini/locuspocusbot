@@ -1,4 +1,5 @@
-﻿using LocusPocusBot.Rooms;
+﻿using CustomConsoleLogger;
+using LocusPocusBot.Rooms;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,7 +20,7 @@ namespace LocusPocusBot
         private static CancellationTokenSource shutdownTokenSource =
             new CancellationTokenSource();
 
-        static async Task<int> Main(string[] args)
+        static async Task Main(string[] args)
         {
             // Build the host
             IHost host = new HostBuilder()
@@ -35,17 +36,17 @@ namespace LocusPocusBot
             try
             {
                 await host.RunAsync(shutdownTokenSource.Token);
-
-                return 0;
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Unhandled exception");
 
-                // Stop the Host
+                // Stop the WebHost, otherwise it might hang here
                 shutdownTokenSource.Cancel();
 
-                return 1;
+                // Required to stop all the threads.
+                // With "return 1", the process could actually stay online forever
+                Environment.Exit(1);
             }
         }
 
@@ -58,12 +59,18 @@ namespace LocusPocusBot
 
         private static void ConfigureLogging(HostBuilderContext hostContext, ILoggingBuilder logging)
         {
-            logging.AddConsole();
+            logging.AddConfiguration(hostContext.Configuration.GetSection("Logging"));
+            logging.AddCustomConsole();
         }
 
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
         {
-            services.Configure<BotConfiguration>(hostContext.Configuration.GetSection("Bot"));
+            // TODO CORE 3.0: Change after https://github.com/aspnet/Hosting/issues/1346 is released
+            services.Configure<ConsoleLifetimeOptions>(console => console.SuppressStatusMessages = true);
+
+            services.UseConfigurationValidation();
+
+            services.ConfigureValidatableSetting<BotConfiguration>(hostContext.Configuration.GetSection("Bot"));
 
             services.AddTransient<IRoomsService, RoomsService>();
 
