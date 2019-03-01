@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LocusPocusBot.Rooms
 {
     public interface IRoomsService
     {
-        Task Update(Department department);
+        Task<List<Room>> LoadRooms(Department department);
     }
 }

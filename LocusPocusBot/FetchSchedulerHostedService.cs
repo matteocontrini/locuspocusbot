@@ -1,5 +1,6 @@
 ﻿using LocusPocusBot.Rooms;
 using Microsoft.Extensions.Hosting;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,11 +22,19 @@ namespace LocusPocusBot
             return Fetch();
         }
 
-        private Task Fetch()
+        private async Task Fetch()
         {
             // TODO: catch
 
-            return this.roomsService.Update(Department.Povo);
+            Department[] departments = new Department[]
+            {
+                Department.Povo
+            };
+
+            foreach (Department department in departments)
+            {
+                department.Rooms = await this.roomsService.LoadRooms(department);
+            }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

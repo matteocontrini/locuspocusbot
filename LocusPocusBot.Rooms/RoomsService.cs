@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using NodaTime;
 using NodaTime.Extensions;
+using NodaTime.Text;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.RegularExpressions;
@@ -16,15 +17,15 @@ namespace LocusPocusBot.Rooms
         {
         }
 
-        public async Task Update(Department department)
+        public async Task<List<Room>> LoadRooms(Department department)
         {
             // Take the current date for Italy's timezone
             DateTimeZone zone = DateTimeZoneProviders.Tzdb["Europe/Rome"];
             LocalDate now = SystemClock.Instance.InZone(zone).GetCurrentDate();
 
             // Format date like 13-10-2017
-            string dateString =
-                string.Format("{0:D2}-{0:2D}-{0:4D}", now.Day, now.Month, now.Year);
+            LocalDatePattern pattern = LocalDatePattern.CreateWithInvariantCulture("dd-MM-yyyy");
+            string dateString = pattern.Format(now);
 
             // Prepare the request payload
             var form = new Dictionary<string, string>
@@ -50,14 +51,13 @@ namespace LocusPocusBot.Rooms
             // Parse the JSON object
             JObject payload = JObject.Parse(body);
 
-            List<Room> rooms = LoadRooms(department, payload);
+            List<Room> rooms = ParseRooms(payload, department);
+            ParseLectures(payload, rooms);
 
-            LoadLectures(payload, rooms);
-
-            department.Rooms = rooms;
+            return rooms;
         }
 
-        private static List<Room> LoadRooms(Department department, JObject payload)
+        private static List<Room> ParseRooms(JObject payload, Department department)
         {
             // Get the dictionary of rooms for the department.
             // This API is so weird. You ask information for a department,
@@ -98,7 +98,7 @@ namespace LocusPocusBot.Rooms
             return rooms;
         }
 
-        private void LoadLectures(JObject payload, List<Room> rooms)
+        private void ParseLectures(JObject payload, List<Room> rooms)
         {
             JArray eventsArray = (JArray)payload.SelectToken("events");
 

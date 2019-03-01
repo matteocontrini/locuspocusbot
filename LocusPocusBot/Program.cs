@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using LocusPocusBot.Rooms;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -64,7 +65,10 @@ namespace LocusPocusBot
         {
             services.Configure<BotConfiguration>(hostContext.Configuration.GetSection("Bot"));
 
+            services.AddTransient<IRoomsService, RoomsService>();
+
             services.AddHostedService<BotHostedService>();
+            services.AddHostedService<FetchSchedulerHostedService>();
         }
     }
 }
