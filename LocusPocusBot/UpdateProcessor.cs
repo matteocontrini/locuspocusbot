@@ -122,7 +122,7 @@ namespace LocusPocusBot
                 return Task.CompletedTask;
             }
 
-            return HandleRoomRequest(callbackQuery.Message, dep, type);
+            return HandleRoomRequest(callbackQuery.Message, dep, type, callbackQuery);
         }
 
         private async Task HandleTextMessage(Message message)
@@ -157,10 +157,15 @@ namespace LocusPocusBot
             }
         }
 
-        private Task HandleRoomRequest(Message message, Department dep, AvailabilityType type)
+        private Task HandleRoomRequest(
+            Message message,
+            Department dep,
+            AvailabilityType type,
+            CallbackQuery query = null)
         {
             RoomsHandler handler = this.handlersFactory.GetHandler<RoomsHandler>();
             handler.Chat = message.Chat;
+            handler.CallbackQuery = query;
             handler.RequestedDepartment = dep;
             handler.RequestedGroup = type;
             return handler.Run();

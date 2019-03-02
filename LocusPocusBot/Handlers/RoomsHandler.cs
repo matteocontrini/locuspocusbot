@@ -37,11 +37,12 @@ namespace LocusPocusBot.Handlers
             StringBuilder msg = new StringBuilder();
             InlineKeyboardButton[] buttons = new InlineKeyboardButton[3];
             string slug = this.RequestedDepartment.Slug;
+            string nowPretty = InstantToPrettyLocalTime(now);
 
             if (this.RequestedGroup == AvailabilityType.Free)
             {
                 msg.Append("<strong>Aule libere alle ");
-                msg.Append(InstantToPrettyLocalTime(now));
+                msg.Append(nowPretty);
                 msg.Append("</strong>");
                 msg.AppendLine();
                 msg.AppendLine();
@@ -65,7 +66,7 @@ namespace LocusPocusBot.Handlers
             else if (this.RequestedGroup == AvailabilityType.Occupied)
             {
                 msg.Append("<strong>Aule occupate alle ");
-                msg.Append(InstantToPrettyLocalTime(now));
+                msg.Append(nowPretty);
                 msg.Append("</strong>");
                 msg.AppendLine();
                 msg.AppendLine();
@@ -89,7 +90,7 @@ namespace LocusPocusBot.Handlers
             else
             {
                 msg.Append("<strong>Situazione aule alle ");
-                msg.Append(InstantToPrettyLocalTime(now));
+                msg.Append(nowPretty);
                 msg.Append("</strong>");
                 msg.AppendLine();
                 msg.AppendLine();
@@ -127,6 +128,11 @@ namespace LocusPocusBot.Handlers
                     text: msg.ToString(),
                     parseMode: ParseMode.Html,
                     replyMarkup: keyboard
+                );
+
+                await this.bot.Client.AnswerCallbackQueryAsync(
+                    callbackQueryId: this.CallbackQuery.Id,
+                    text: $"Aggiornato alle {nowPretty}"
                 );
             }
             else
