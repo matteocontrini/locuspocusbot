@@ -27,7 +27,22 @@ namespace LocusPocusBot.Handlers
             if (this.RequestedDepartment.Rooms == null ||
                 this.RequestedDepartment.Rooms.Count == 0)
             {
-                // TODO: data is unavailable
+                if (this.CallbackQuery != null)
+                {
+                    await this.bot.Client.AnswerCallbackQueryAsync(
+                        callbackQueryId: this.CallbackQuery.Id,
+                        text: "❗ Dati aggiornati non disponibili",
+                        showAlert: true
+                    );
+                }
+                else
+                {
+                    await this.bot.Client.SendTextMessageAsync(
+                        chatId: this.Chat.Id,
+                        text: "❗ Dati aggiornati non disponibili"
+                    );
+                }
+
                 return;
             }
 
