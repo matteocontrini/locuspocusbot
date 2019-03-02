@@ -1,4 +1,5 @@
 ﻿using CustomConsoleLogger;
+using LocusPocusBot.Handlers;
 using LocusPocusBot.Rooms;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -73,6 +74,10 @@ namespace LocusPocusBot
             services.ConfigureValidatableSetting<BotConfiguration>(hostContext.Configuration.GetSection("Bot"));
 
             services.AddTransient<IRoomsService, RoomsService>();
+
+            services.AddSingleton<IBotService, BotService>();
+            services.AddScoped<IUpdateProcessor, UpdateProcessor>();
+            services.AddHandlers();
 
             services.AddHostedService<BotHostedService>();
             services.AddHostedService<FetchSchedulerHostedService>();
