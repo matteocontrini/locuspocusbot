@@ -9,32 +9,41 @@ namespace LocusPocusBot.Rooms
         /// <summary>
         /// EasyRoom ID of the department
         /// </summary>
-        public string Id { get; private set; }
+        public string Id { get; }
 
         /// <summary>
         /// Name of the department
         /// </summary>
-        public string Name { get; private set;  }
+        public string Name { get; }
+
+        /// <summary>
+        /// Short name of the department, without spaces, capital letters, etc.
+        /// </summary>
+        public string Slug { get; }
 
         /// <summary>
         /// List of rooms in the department
         /// </summary>
         public List<Room> Rooms { get; set; }
 
-        public Department(string id, string name)
+        public Department(string id, string name, string slug)
         {
             this.Id = id;
             this.Name = name;
+            this.Slug = slug;
         }
 
-        public static Department Povo { get; } = new Department("E0503", "Povo");
+        public static Department Povo { get; } = new Department("E0503", "Povo", "povo");
+
+        public static Department Mesiano { get; } = new Department("E0301", "Mesiano", "mesiano");
 
         public AvailabilityGroup[] FindFreeRoomsAt(Instant instant)
         {
             AvailabilityGroup[] groups = new AvailabilityGroup[]
             {
                 new AvailabilityGroup(AvailabilityType.Free),
-                new AvailabilityGroup(AvailabilityType.Occupied)
+                new AvailabilityGroup(AvailabilityType.Occupied),
+                new AvailabilityGroup(AvailabilityType.Any)
             };
 
             foreach (Room room in this.Rooms)
@@ -141,43 +150,61 @@ namespace LocusPocusBot.Rooms
                 } // room else
 
                 bool isFreeNow = interval.Contains(instant);
+                RoomAvailability r = new RoomAvailability(room, interval, isFreeNow);
 
                 if (isFreeNow)
                 {
-                    groups[0].Rooms.Add(new RoomAvailability(room, interval));
+                    groups[0].Rooms.Add(r);
                 }
                 else
                 {
-                    groups[1].Rooms.Add(new RoomAvailability(room, interval));
+                    groups[1].Rooms.Add(r);
                 }
+
+                groups[2].Rooms.Add(r);
             } // rooms loop
 
             // Sort free rooms
             groups[0].Rooms.Sort((x, y) =>
             {
                 // Sort rooms by name if free until the same time
-                if (!x.FreeInterval.HasEnd && !y.FreeInterval.HasEnd)
+                if ((!x.FreeInterval.HasEnd && !y.FreeInterval.HasEnd) ||
+                    (x.FreeInterval.HasEnd && y.FreeInterval.HasEnd &&
+                     x.FreeInterval.End == y.FreeInterval.End))
                 {
                     return string.Compare(x.Name, y.Name);
                 }
 
+                // The room x is free until the end of the day,
+                // return that x less than y
                 if (!x.FreeInterval.HasEnd)
-                {
-                    return 1;
-                }
-
-                if (!y.FreeInterval.HasEnd)
                 {
                     return -1;
                 }
 
-                return x.FreeInterval.End.CompareTo(y.FreeInterval.End);
+                // The room y is free until the end of the day,
+                // return that x is more than y
+                if (!y.FreeInterval.HasEnd)
+                {
+                    return 1;
+                }
+
+                // Put before rooms that will be available for more time
+                return y.FreeInterval.End.CompareTo(x.FreeInterval.End);
             });
 
             // Sort occupied rooms
             groups[1].Rooms.Sort((x, y) =>
             {
+                // Occupied rooms will be free at some time T in the future.
+                // Sort them by T
                 return x.FreeInterval.Start.CompareTo(y.FreeInterval.Start);
+            });
+
+            // Sort all rooms by name
+            groups[2].Rooms.Sort((x, y) =>
+            {
+                return x.Name.CompareTo(y.Name);
             });
 
             return groups;

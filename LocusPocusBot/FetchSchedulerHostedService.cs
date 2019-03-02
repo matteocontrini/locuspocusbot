@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,7 +30,8 @@ namespace LocusPocusBot
         {
             Department[] departments = new Department[]
             {
-                Department.Povo
+                Department.Povo,
+                Department.Mesiano
             };
 
             foreach (Department department in departments)

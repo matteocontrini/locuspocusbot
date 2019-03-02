@@ -15,6 +15,7 @@ namespace LocusPocusBot.Rooms
 
         public RoomsService()
         {
+            // TODO: inject HttpClient
         }
 
         public async Task<List<Room>> LoadRooms(Department department)
@@ -71,19 +72,39 @@ namespace LocusPocusBot.Rooms
             {
                 string roomName = item.Value["room_name"].ToString();
 
-                // Keep only the name of the room, like "B107"
-                // Strips parentheses, bla...
-                Match match = Regex.Match(roomName, "[A-B]{1}[0-9]{3}");
+                if (department == Department.Povo)
+                {
+                    // Keep only the name of the room, like "B107"
+                    // Strips parentheses, bla...
+                    Match match = Regex.Match(roomName, "[A-B]{1}[0-9]{3}");
 
-                if (match.Success)
-                {
-                    Room room = new Room(item.Key, match.Value);
-                    rooms.Add(room);
+                    if (match.Success)
+                    {
+                        roomName = match.Value;
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
-                else
+                else if (department == Department.Mesiano)
                 {
-                    continue;
+                    if (roomName.StartsWith("Aula "))
+                    {
+                        roomName = roomName.Substring(roomName.IndexOf(' ') + 1);
+                    }
+                    else if (roomName.StartsWith("Biblioteca"))
+                    {
+                        roomName = "Biblioteca";
+                    }
+                    else if (roomName == "studio docente")
+                    {
+                        continue;
+                    }
                 }
+
+                Room room = new Room(item.Key, roomName);
+                rooms.Add(room);
             }
 
             return rooms;

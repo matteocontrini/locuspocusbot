@@ -24,10 +24,16 @@ namespace LocusPocusBot.Rooms
         /// </summary>
         public Interval FreeInterval { get; set; }
 
-        public RoomAvailability(Room room, Interval freeInterval)
+        /// <summary>
+        /// Whether the room is currently free
+        /// </summary>
+        public bool IsFreeNow { get; set; }
+
+        public RoomAvailability(Room room, Interval freeInterval, bool isFreeNow)
         {
             this.room = room;
             this.FreeInterval = freeInterval;
+            this.IsFreeNow = isFreeNow;
         }
 
         public override string ToString()
@@ -37,7 +43,7 @@ namespace LocusPocusBot.Rooms
             s.Append(this.Name);
             s.Append("] ");
 
-            LocalTimePattern pattern = LocalTimePattern.CreateWithInvariantCulture("HH:mm:ss");
+            LocalTimePattern pattern = LocalTimePattern.CreateWithInvariantCulture("HH:mm");
 
             if (this.FreeInterval.HasStart)
             {

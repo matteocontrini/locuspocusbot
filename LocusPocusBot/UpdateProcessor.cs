@@ -1,5 +1,7 @@
 ﻿using LocusPocusBot.Handlers;
+using LocusPocusBot.Rooms;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
@@ -80,11 +82,47 @@ namespace LocusPocusBot
         {
             this.logger.LogInformation("CB <{0}> {1}", callbackQuery.Message.Chat.Id, callbackQuery.Data);
 
-            return Task.CompletedTask;
-            //RoomsHandler handler = this.handlersFactory.GetHandler<RoomsHandler>();
-            //handler.Chat = callbackQuery.Message.Chat;
-            //handler.CallbackQuery = callbackQuery;
-            //return handler.Run();
+            string[] data = callbackQuery.Data.Split(';');
+
+            // It doesn't make much sense but it must be kept for backwards compatiblity
+            if (data[0] != "free")
+            {
+                return Task.CompletedTask;
+            }
+
+            Department dep;
+            if (data[1] == "povo")
+            {
+                dep = Department.Povo;
+            }
+            else if (data[1] == "mesiano")
+            {
+                dep = Department.Mesiano;
+            }
+            else
+            {
+                return Task.CompletedTask;
+            }
+
+            AvailabilityType type;
+            if (data[2] == "now")
+            {
+                type = AvailabilityType.Free;
+            }
+            else if (data[2] == "future")
+            {
+                type = AvailabilityType.Occupied;
+            }
+            else if (data[2] == "all")
+            {
+                type = AvailabilityType.Any;
+            }
+            else
+            {
+                return Task.CompletedTask;
+            }
+
+            return HandleRoomRequest(callbackQuery.Message, dep, type);
         }
 
         private async Task HandleTextMessage(Message message)
@@ -103,13 +141,29 @@ namespace LocusPocusBot
                 handler.Chat = message.Chat;
                 await handler.Run();
             }
+            else if (t.Contains("povo", StringComparison.OrdinalIgnoreCase))
+            {
+                await HandleRoomRequest(message, Department.Povo, AvailabilityType.Free);
+            }
+            else if (t.Contains("mesiano", StringComparison.OrdinalIgnoreCase))
+            {
+                await HandleRoomRequest(message, Department.Mesiano, AvailabilityType.Free);
+            }
             else
             {
-                //RoomsHandler handler = this.handlersFactory.GetHandler<RoomsHandler>();
-                //handler.Chat = callbackQuery.Message.Chat;
-                //handler.CallbackQuery = callbackQuery;
-                //return handler.Run();
+                HelpHandler handler = this.handlersFactory.GetHandler<HelpHandler>();
+                handler.Chat = message.Chat;
+                await handler.Run();
             }
+        }
+
+        private Task HandleRoomRequest(Message message, Department dep, AvailabilityType type)
+        {
+            RoomsHandler handler = this.handlersFactory.GetHandler<RoomsHandler>();
+            handler.Chat = message.Chat;
+            handler.RequestedDepartment = dep;
+            handler.RequestedGroup = type;
+            return handler.Run();
         }
 
         private async Task LogChat(Chat chat)
