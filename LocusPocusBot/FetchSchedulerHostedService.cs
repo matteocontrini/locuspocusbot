@@ -1,6 +1,7 @@
 ﻿using LocusPocusBot.Rooms;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,17 +20,15 @@ namespace LocusPocusBot
             this.logger = logger;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             // TODO: schedule every hour
 
-            return Fetch();
+            await Fetch();
         }
 
         private async Task Fetch()
         {
-            // TODO: catch
-
             Department[] departments = new Department[]
             {
                 Department.Povo
@@ -39,8 +38,17 @@ namespace LocusPocusBot
             {
                 this.logger.LogInformation($"Refreshing data for {department.Id}/{department.Name}");
 
-                department.Rooms = await this.roomsService.LoadRooms(department);
+                try
+                {
+                    department.Rooms = await this.roomsService.LoadRooms(department);
+                }
+                catch (Exception ex)
+                {
+                    this.logger.LogError(ex, $"Exception while refreshing {department.Id}/{department.Name}");
+                }
             }
+
+            this.logger.LogInformation("Done refreshing");
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
