@@ -11,6 +11,7 @@ namespace LocusPocusBot
     {
         private readonly IRoomsService roomsService;
         private readonly ILogger<FetchSchedulerHostedService> logger;
+        private Timer timer;
 
         public FetchSchedulerHostedService(IRoomsService roomsService,
                                            ILogger<FetchSchedulerHostedService> logger)
@@ -19,11 +20,31 @@ namespace LocusPocusBot
             this.logger = logger;
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            // TODO: schedule every hour
+            this.timer = new Timer(
+                callback: Callback,
+                state: null,
+                dueTime: TimeSpanUntilNextTick(),
+                period: TimeSpan.FromMilliseconds(-1)
+            );
 
+            return Fetch();
+        }
+
+        async void Callback(object state)
+        {
             await Fetch();
+
+            this.timer.Change(
+                dueTime: TimeSpanUntilNextTick(),
+                period: TimeSpan.FromMilliseconds(-1)
+            );
+        }
+
+        private TimeSpan TimeSpanUntilNextTick()
+        {
+            return TimeSpan.FromMinutes(60 - DateTime.UtcNow.Minute);
         }
 
         private async Task Fetch()
