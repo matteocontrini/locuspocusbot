@@ -28,6 +28,13 @@ namespace LocusPocusBot.Rooms
             LocalDatePattern pattern = LocalDatePattern.CreateWithInvariantCulture("dd-MM-yyyy");
             string dateString = pattern.Format(now);
 
+            // Clear cached data of the previous day
+            if (department.UpdatedAt != dateString)
+            {
+                department.Rooms = null;
+                department.UpdatedAt = dateString;
+            }
+
             // Prepare the request payload
             var form = new Dictionary<string, string>
             {

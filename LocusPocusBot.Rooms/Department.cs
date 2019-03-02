@@ -26,6 +26,11 @@ namespace LocusPocusBot.Rooms
         /// </summary>
         public List<Room> Rooms { get; set; }
 
+        /// <summary>
+        /// Date of the cached data
+        /// </summary>
+        public string UpdatedAt { get; set; }
+
         public Department(string id, string name, string slug)
         {
             this.Id = id;
