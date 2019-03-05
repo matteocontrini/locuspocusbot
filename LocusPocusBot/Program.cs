@@ -73,7 +73,8 @@ namespace LocusPocusBot
 
             services.ConfigureValidatableSetting<BotConfiguration>(hostContext.Configuration.GetSection("Bot"));
 
-            services.AddTransient<IRoomsService, RoomsService>();
+            services.AddHttpClient<IRoomsService, RoomsService>();
+            //services.AddTransient<IRoomsService, RoomsService>();
 
             services.AddSingleton<IBotService, BotService>();
             services.AddScoped<IUpdateProcessor, UpdateProcessor>();

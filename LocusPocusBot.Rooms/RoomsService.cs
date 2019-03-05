@@ -12,10 +12,11 @@ namespace LocusPocusBot.Rooms
     public class RoomsService : IRoomsService
     {
         private readonly string easyRoomUrl = "https://easyroom.unitn.it/Orario/rooms_call.php";
+        private readonly HttpClient client;
 
-        public RoomsService()
+        public RoomsService(HttpClient client)
         {
-            // TODO: inject HttpClient
+            this.client = client;
         }
 
         public async Task<List<Room>> LoadRooms(Department department)
@@ -44,14 +45,9 @@ namespace LocusPocusBot.Rooms
                 { "_lang", "it" }
             };
 
-            // Create a new HttpClient.
-            // (Note: creating a new client every time is unideal,
-            // but we're just doing a few requests per hour...)
-            HttpClient client = new HttpClient();
-
             // Post x-www-form-urlencoded data
             HttpResponseMessage response =
-                await client.PostAsync(this.easyRoomUrl, new FormUrlEncodedContent(form));
+                await this.client.PostAsync(this.easyRoomUrl, new FormUrlEncodedContent(form));
 
             // Read the response body
             string body = await response.Content.ReadAsStringAsync();
