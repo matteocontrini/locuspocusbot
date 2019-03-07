@@ -1,6 +1,8 @@
 ﻿using CustomConsoleLogger;
+using LocusPocusBot.Data;
 using LocusPocusBot.Handlers;
 using LocusPocusBot.Rooms;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,6 +38,13 @@ namespace LocusPocusBot
 
             try
             {
+                logger.LogInformation("Running database migrations...");
+
+                using (BotContext db = new BotContext())
+                {
+                    db.Database.Migrate();
+                }
+
                 await host.RunAsync(shutdownTokenSource.Token);
             }
             catch (Exception ex)
@@ -70,8 +79,9 @@ namespace LocusPocusBot
             services.Configure<ConsoleLifetimeOptions>(console => console.SuppressStatusMessages = true);
 
             services.UseConfigurationValidation();
-
             services.ConfigureValidatableSetting<BotConfiguration>(hostContext.Configuration.GetSection("Bot"));
+
+            services.AddDbContext<BotContext>();
 
             services.AddHttpClient<IRoomsService, RoomsService>();
             //services.AddTransient<IRoomsService, RoomsService>();
