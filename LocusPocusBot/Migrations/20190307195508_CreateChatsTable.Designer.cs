@@ -9,14 +9,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LocusPocusBot.Migrations
 {
     [DbContext(typeof(BotContext))]
-    [Migration("20190307160314_CreateChatsTable")]
+    [Migration("20190307195508_CreateChatsTable")]
     partial class CreateChatsTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034");
+                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("LocusPocusBot.Data.ChatEntity", b =>
                 {

@@ -23,29 +23,35 @@ namespace LocusPocusBot
         private static CancellationTokenSource shutdownTokenSource =
             new CancellationTokenSource();
 
+        public static IHost Host { get; }
+
+        static Program()
+        {
+            Host = new HostBuilder()
+                    .ConfigureAppConfiguration(ConfigureApp)
+                    .ConfigureServices(ConfigureServices)
+                    .ConfigureLogging(ConfigureLogging)
+                    .UseConsoleLifetime()
+                    .Build();
+        }
+
         static async Task Main(string[] args)
         {
-            // Build the host
-            IHost host = new HostBuilder()
-                .ConfigureAppConfiguration(ConfigureApp)
-                .ConfigureServices(ConfigureServices)
-                .ConfigureLogging(ConfigureLogging)
-                .UseConsoleLifetime()
-                .Build();
-
             // Get the logger
-            ILogger logger = host.Services.GetRequiredService<ILogger<Program>>();
+            ILogger logger = Host.Services.GetRequiredService<ILogger<Program>>();
 
             try
             {
                 logger.LogInformation("Running database migrations...");
 
-                using (BotContext db = new BotContext())
+                using (BotContext db = Host.Services.GetRequiredService<BotContext>())
                 {
                     db.Database.Migrate();
                 }
 
-                await host.RunAsync(shutdownTokenSource.Token);
+                logger.LogInformation("Done");
+
+                await Host.RunAsync(shutdownTokenSource.Token);
             }
             catch (Exception ex)
             {
@@ -80,11 +86,12 @@ namespace LocusPocusBot
 
             services.UseConfigurationValidation();
             services.ConfigureValidatableSetting<BotConfiguration>(hostContext.Configuration.GetSection("Bot"));
-
+            services.ConfigureValidatableSetting<DatabaseConfiguration>(hostContext.Configuration.GetSection("Database"));
+            
             services.AddDbContext<BotContext>();
 
+            // This also registers the service as a transient service
             services.AddHttpClient<IRoomsService, RoomsService>();
-            //services.AddTransient<IRoomsService, RoomsService>();
 
             services.AddSingleton<IBotService, BotService>();
             services.AddScoped<IUpdateProcessor, UpdateProcessor>();

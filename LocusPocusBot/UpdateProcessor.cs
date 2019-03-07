@@ -1,4 +1,5 @@
-﻿using LocusPocusBot.Handlers;
+﻿using LocusPocusBot.Data;
+using LocusPocusBot.Handlers;
 using LocusPocusBot.Rooms;
 using Microsoft.Extensions.Logging;
 using System;
@@ -14,14 +15,17 @@ namespace LocusPocusBot
         private readonly ILogger logger;
         private readonly IHandlersFactory handlersFactory;
         private readonly IBotService bot;
+        private readonly BotContext db;
 
         public UpdateProcessor(ILogger<UpdateProcessor> logger,
                                IHandlersFactory handlersFactory,
-                               IBotService botService)
+                               IBotService botService,
+                               BotContext context)
         {
             this.logger = logger;
             this.handlersFactory = handlersFactory;
             this.bot = botService;
+            this.db = context;
         }
 
         public async Task ProcessUpdate(Update update)
@@ -34,6 +38,8 @@ namespace LocusPocusBot
             }
             else if (update.Type == UpdateType.CallbackQuery)
             {
+                await LogChat(update.CallbackQuery.From);
+
                 await HandlerCallbackQuery(update.CallbackQuery);
             }
         }
@@ -171,20 +177,52 @@ namespace LocusPocusBot
             return handler.Run();
         }
 
-        private async Task LogChat(Chat chat)
+        private Task LogChat(User user)
         {
-            //ChatEntity chatEntity = new ChatEntity()
-            //{
-            //    ChatId = chat.Id,
-            //    Type = chat.Type.ToString(),
-            //    Title = chat.Title,
-            //    Username = chat.Username,
-            //    FirstName = chat.FirstName,
-            //    LastName = chat.LastName,
-            //    UpdatedAt = DateTime.UtcNow
-            //};
+            ChatEntity entity = new ChatEntity()
+            {
+                Id = user.Id,
+                Type = ChatType.Private.ToString(),
+                Title = null,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                UpdatedAt = DateTime.UtcNow
+            };
 
-            //await this.chatRepository.InsertOrReplaceChat(chatEntity);
+            return LogChat(entity);
+        }
+
+        private Task LogChat(Chat chat)
+        {
+            ChatEntity entity = new ChatEntity()
+            {
+                Id = chat.Id,
+                Type = chat.Type.ToString(),
+                Title = chat.Title,
+                Username = chat.Username,
+                FirstName = chat.FirstName,
+                LastName = chat.LastName,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            return LogChat(entity);
+        }
+
+        private async Task LogChat(ChatEntity chat)
+        {
+            ChatEntity existing = this.db.Chats.Find(chat.Id);
+
+            if (existing == null)
+            {
+                this.db.Add(chat);
+            }
+            else
+            {
+                this.db.Entry(existing).CurrentValues.SetValues(chat);
+            }
+
+            await this.db.SaveChangesAsync();
         }
     }
 }
