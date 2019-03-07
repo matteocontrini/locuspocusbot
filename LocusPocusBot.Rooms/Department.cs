@@ -107,7 +107,7 @@ namespace LocusPocusBot.Rooms
                             {
                                 // If this condition is true, we've found a gap between two lectures,
                                 // which means we've a FREE slot
-                                if (room.Lectures[j].StartInstant != room.Lectures[j - 1].EndInstant)
+                                if (room.Lectures[j].StartInstant > room.Lectures[j - 1].EndInstant)
                                 {
                                     // So the room is free during the gap
                                     interval = new Interval(
