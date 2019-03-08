@@ -1,0 +1,10 @@
+language: csharp
+dist: xenial
+mono: none
+dotnet: 2.2
+
+install:
+- dotnet restore
+
+script:
+- dotnet build
