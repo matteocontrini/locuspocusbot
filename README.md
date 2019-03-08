@@ -2,7 +2,7 @@
 
 ## Previous versions
 
-A previous version of this bot was developed in Go and has been available for about a year and a half. That version is now available [in another branch](https://github.com/matteocontrini/locuspocusbot/tree/go).
+A previous version of this bot was developed in Go and has been available for about a year and a half. The code of that version is now available [in another branch](https://github.com/matteocontrini/locuspocusbot/tree/go).
 
 ## Requirements
 
