@@ -19,5 +19,9 @@ namespace LocusPocusBot.Data
         public string LastName { get; set; }
 
         public DateTime UpdatedAt { get; set; }
+
+        public uint PovoCount { get; set; }
+
+        public uint MesianoCount { get; set; }
     }
 }

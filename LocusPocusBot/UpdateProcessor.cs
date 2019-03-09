@@ -38,7 +38,7 @@ namespace LocusPocusBot
             }
             else if (update.Type == UpdateType.CallbackQuery)
             {
-                await LogChat(update.CallbackQuery.From);
+                await LogUser(update.CallbackQuery.From);
 
                 await HandlerCallbackQuery(update.CallbackQuery);
             }
@@ -163,66 +163,103 @@ namespace LocusPocusBot
             }
         }
 
-        private Task HandleRoomRequest(
+        private async Task HandleRoomRequest(
             Message message,
             Department dep,
             AvailabilityType type,
             CallbackQuery query = null)
         {
+            long chatId = message?.Chat?.Id ?? query.Message.Chat.Id;
+
+            await IncrementDepartmentUsage(chatId, dep);
+
             RoomsHandler handler = this.handlersFactory.GetHandler<RoomsHandler>();
             handler.Chat = message.Chat;
             handler.CallbackQuery = query;
             handler.RequestedDepartment = dep;
             handler.RequestedGroup = type;
-            return handler.Run();
+            await handler.Run();
         }
 
-        private Task LogChat(User user)
+        private async Task LogUser(User user)
         {
-            ChatEntity entity = new ChatEntity()
-            {
-                Id = user.Id,
-                Type = ChatType.Private.ToString(),
-                Title = null,
-                Username = user.Username,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                UpdatedAt = DateTime.UtcNow
-            };
+            ChatEntity existing = this.db.Chats.Find((long)user.Id);
 
-            return LogChat(entity);
+            if (existing == null)
+            {
+                ChatEntity entity = new ChatEntity()
+                {
+                    Id = user.Id,
+                    Type = ChatType.Private.ToString(),
+                    Username = user.Username,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    UpdatedAt = DateTime.UtcNow
+                };
+
+                this.db.Add(entity);
+            }
+            else
+            {
+                existing.Username = user.Username;
+                existing.FirstName = user.FirstName;
+                existing.LastName = user.LastName;
+                existing.UpdatedAt = DateTime.UtcNow;
+            }
+
+            await this.db.SaveChangesAsync();
         }
 
-        private Task LogChat(Chat chat)
-        {
-            ChatEntity entity = new ChatEntity()
-            {
-                Id = chat.Id,
-                Type = chat.Type.ToString(),
-                Title = chat.Title,
-                Username = chat.Username,
-                FirstName = chat.FirstName,
-                LastName = chat.LastName,
-                UpdatedAt = DateTime.UtcNow
-            };
-
-            return LogChat(entity);
-        }
-
-        private async Task LogChat(ChatEntity chat)
+        private async Task LogChat(Chat chat)
         {
             ChatEntity existing = this.db.Chats.Find(chat.Id);
 
             if (existing == null)
             {
-                this.db.Add(chat);
+                ChatEntity entity = new ChatEntity()
+                {
+                    Id = chat.Id,
+                    Type = chat.Type.ToString(),
+                    Title = chat.Title,
+                    Username = chat.Username,
+                    FirstName = chat.FirstName,
+                    LastName = chat.LastName,
+                    UpdatedAt = DateTime.UtcNow
+                };
+
+                this.db.Add(entity);
             }
             else
             {
-                this.db.Entry(existing).CurrentValues.SetValues(chat);
+                existing.Type = chat.Type.ToString();
+                existing.Title = chat.Title;
+                existing.Username = chat.Username;
+                existing.FirstName = chat.FirstName;
+                existing.LastName = chat.LastName;
+                existing.UpdatedAt = DateTime.UtcNow;
             }
 
             await this.db.SaveChangesAsync();
+        }
+
+        private Task IncrementDepartmentUsage(long chatId, Department dep)
+        {
+            ChatEntity chat = this.db.Chats.Find(chatId);
+
+            if (dep == Department.Povo)
+            {
+                chat.PovoCount++;
+            }
+            else if (dep == Department.Mesiano)
+            {
+                chat.MesianoCount++;
+            }
+            else
+            {
+                return Task.CompletedTask;
+            }
+
+            return this.db.SaveChangesAsync();
         }
     }
 }
