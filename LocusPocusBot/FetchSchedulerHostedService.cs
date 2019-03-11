@@ -52,7 +52,8 @@ namespace LocusPocusBot
             Department[] departments = new Department[]
             {
                 Department.Povo,
-                Department.Mesiano
+                Department.Mesiano,
+                Department.Psicologia
             };
 
             foreach (Department department in departments)

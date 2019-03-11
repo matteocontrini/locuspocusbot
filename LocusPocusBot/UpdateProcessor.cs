@@ -105,6 +105,10 @@ namespace LocusPocusBot
             {
                 dep = Department.Mesiano;
             }
+            else if (data[1] == "psicologia")
+            {
+                dep = Department.Psicologia;
+            }
             else
             {
                 return Task.CompletedTask;
@@ -154,6 +158,9 @@ namespace LocusPocusBot
             else if (t.Contains("mesiano", StringComparison.OrdinalIgnoreCase))
             {
                 await HandleRoomRequest(message, Department.Mesiano, AvailabilityType.Free);
+            }else if (t.Contains("psicologia", StringComparison.OrdinalIgnoreCase))
+            {
+                await HandleRoomRequest(message, Department.Psicologia, AvailabilityType.Free);
             }
             else
             {

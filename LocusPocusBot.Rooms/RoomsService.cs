@@ -105,6 +105,24 @@ namespace LocusPocusBot.Rooms
                         continue;
                     }
                 }
+                else if (department == Department.Psicologia)
+                {
+                    // Keep only the name of the room, like "1"
+                    Match match = Regex.Match(roomName, "[0-9]{1,2}");
+
+                    if (match.Success)
+                    {
+                        roomName = match.Value;
+                    }
+                    else if (roomName == "Aula Magna")
+                    {
+                        roomName = "Magna";
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
 
                 Room room = new Room(item.Key, roomName);
                 rooms.Add(room);
