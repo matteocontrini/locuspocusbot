@@ -158,7 +158,8 @@ namespace LocusPocusBot
             else if (t.Contains("mesiano", StringComparison.OrdinalIgnoreCase))
             {
                 await HandleRoomRequest(message, Department.Mesiano, AvailabilityType.Free);
-            }else if (t.Contains("psicologia", StringComparison.OrdinalIgnoreCase))
+            }
+            else if (t.Contains("psicologia", StringComparison.OrdinalIgnoreCase))
             {
                 await HandleRoomRequest(message, Department.Psicologia, AvailabilityType.Free);
             }

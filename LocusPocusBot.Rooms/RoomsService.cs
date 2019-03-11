@@ -100,14 +100,15 @@ namespace LocusPocusBot.Rooms
                     {
                         roomName = "Biblioteca";
                     }
-                    else if (roomName == "studio docente")
+                    else
                     {
                         continue;
                     }
                 }
                 else if (department == Department.Psicologia)
                 {
-                    // Keep only the name of the room, like "1"
+                    // Keep only the name of the room, like "1" or "11"
+                    // Strips floor, etc...
                     Match match = Regex.Match(roomName, "[0-9]{1,2}");
 
                     if (match.Success)
@@ -117,6 +118,10 @@ namespace LocusPocusBot.Rooms
                     else if (roomName == "Aula Magna")
                     {
                         roomName = "Magna";
+                    }
+                    else if (roomName.StartsWith("Laboratorio informatico"))
+                    {
+                        roomName = "LAB" + roomName.Substring(24);
                     }
                     else
                     {
