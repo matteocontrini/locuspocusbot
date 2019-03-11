@@ -170,8 +170,9 @@ namespace LocusPocusBot
             CallbackQuery query = null)
         {
             long chatId = message?.Chat?.Id ?? query.Message.Chat.Id;
-
-            await IncrementDepartmentUsage(chatId, dep);
+            RequestType requestType = query != null ? RequestType.CallbackQuery : RequestType.Message;
+            
+            await LogUsage(chatId, requestType, type, dep);
 
             RoomsHandler handler = this.handlersFactory.GetHandler<RoomsHandler>();
             handler.Chat = message.Chat;
@@ -242,22 +243,22 @@ namespace LocusPocusBot
             await this.db.SaveChangesAsync();
         }
 
-        private Task IncrementDepartmentUsage(long chatId, Department dep)
+        private Task LogUsage(
+            long chatId,
+            RequestType requestType,
+            AvailabilityType availabilityType,
+            Department dep)
         {
-            ChatEntity chat = this.db.Chats.Find(chatId);
+            LogEntity log = new LogEntity()
+            {
+                At = DateTime.UtcNow,
+                Chat = this.db.Chats.Find(chatId),
+                RequestType = requestType,
+                AvailabilityType = availabilityType,
+                Department = dep.Slug
+            };
 
-            if (dep == Department.Povo)
-            {
-                chat.PovoCount++;
-            }
-            else if (dep == Department.Mesiano)
-            {
-                chat.MesianoCount++;
-            }
-            else
-            {
-                return Task.CompletedTask;
-            }
+            this.db.Logs.Add(log);
 
             return this.db.SaveChangesAsync();
         }
