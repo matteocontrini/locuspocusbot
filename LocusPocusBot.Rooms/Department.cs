@@ -42,6 +42,8 @@ namespace LocusPocusBot.Rooms
 
         public static Department Mesiano { get; } = new Department("E0301", "Mesiano", "mesiano");
 
+        public static Department Psicologia { get; } = new Department("E0705", "Psicologia", "psicologia");
+
         public AvailabilityGroup[] FindFreeRoomsAt(Instant instant)
         {
             AvailabilityGroup[] groups = new AvailabilityGroup[]
