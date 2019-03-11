@@ -19,9 +19,9 @@ namespace LocusPocusBot.Handlers
 
             msg.AppendLine("Ciao! 🤓");
             msg.AppendLine();
-            msg.AppendLine("Sono *LocusPocus* e ti posso aiutare a trovare le aule libere presso i poli di Povo e Mesiano dell'Università di Trento 🎓");
+            msg.AppendLine("Sono *LocusPocus* e ti posso aiutare a trovare le aule libere presso i poli dell'Università di Trento 🎓");
             msg.AppendLine();
-            msg.AppendLine("Scrivimi /povo o /mesiano per ottenere la lista delle aule libere.");
+            msg.AppendLine("Scrivimi /povo, /mesiano o /psicologia per ottenere la lista delle aule libere.");
             msg.AppendLine();
             msg.AppendLine("Altre info in /aiuto");
             
