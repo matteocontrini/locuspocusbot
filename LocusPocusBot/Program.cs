@@ -97,6 +97,13 @@ namespace LocusPocusBot
             services.AddScoped<IUpdateProcessor, UpdateProcessor>();
             services.AddHandlers();
 
+            services.AddSingleton(new Department[]
+            {
+                new Department("E0503", "Povo", "povo"),
+                new Department("E0301", "Mesiano", "mesiano"),
+                new Department("E0705", "Psicologia", "psicologia")
+            });
+
             services.AddHostedService<BotHostedService>();
             services.AddHostedService<FetchSchedulerHostedService>();
         }

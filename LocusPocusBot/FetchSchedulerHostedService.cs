@@ -11,13 +11,16 @@ namespace LocusPocusBot
     {
         private readonly IRoomsService roomsService;
         private readonly ILogger<FetchSchedulerHostedService> logger;
+        private readonly Department[] departments;
         private Timer timer;
 
         public FetchSchedulerHostedService(IRoomsService roomsService,
-                                           ILogger<FetchSchedulerHostedService> logger)
+                                           ILogger<FetchSchedulerHostedService> logger,
+                                           Department[] departments)
         {
             this.roomsService = roomsService;
             this.logger = logger;
+            this.departments = departments;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -49,14 +52,7 @@ namespace LocusPocusBot
 
         private async Task Fetch()
         {
-            Department[] departments = new Department[]
-            {
-                Department.Povo,
-                Department.Mesiano,
-                Department.Psicologia
-            };
-
-            foreach (Department department in departments)
+            foreach (Department department in this.departments)
             {
                 this.logger.LogInformation($"Refreshing data for {department.Id}/{department.Name}");
 

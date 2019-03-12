@@ -16,16 +16,19 @@ namespace LocusPocusBot
         private readonly IHandlersFactory handlersFactory;
         private readonly IBotService bot;
         private readonly BotContext db;
+        private readonly Department[] departments;
 
         public UpdateProcessor(ILogger<UpdateProcessor> logger,
                                IHandlersFactory handlersFactory,
                                IBotService botService,
-                               BotContext context)
+                               BotContext context,
+                               Department[] departments)
         {
             this.logger = logger;
             this.handlersFactory = handlersFactory;
             this.bot = botService;
             this.db = context;
+            this.departments = departments;
         }
 
         public async Task ProcessUpdate(Update update)
@@ -96,23 +99,7 @@ namespace LocusPocusBot
                 return Task.CompletedTask;
             }
 
-            Department dep;
-            if (data[1] == "povo")
-            {
-                dep = Department.Povo;
-            }
-            else if (data[1] == "mesiano")
-            {
-                dep = Department.Mesiano;
-            }
-            else if (data[1] == "psicologia")
-            {
-                dep = Department.Psicologia;
-            }
-            else
-            {
-                return Task.CompletedTask;
-            }
+            Department dep = this.departments.First(x => x.Slug == data[1]);
 
             AvailabilityType type;
             if (data[2] == "now")
@@ -151,23 +138,22 @@ namespace LocusPocusBot
                 handler.Chat = message.Chat;
                 await handler.Run();
             }
-            else if (t.Contains("povo", StringComparison.OrdinalIgnoreCase))
-            {
-                await HandleRoomRequest(message, Department.Povo, AvailabilityType.Free);
-            }
-            else if (t.Contains("mesiano", StringComparison.OrdinalIgnoreCase))
-            {
-                await HandleRoomRequest(message, Department.Mesiano, AvailabilityType.Free);
-            }
-            else if (t.Contains("psicologia", StringComparison.OrdinalIgnoreCase))
-            {
-                await HandleRoomRequest(message, Department.Psicologia, AvailabilityType.Free);
-            }
             else
             {
-                HelpHandler handler = this.handlersFactory.GetHandler<HelpHandler>();
-                handler.Chat = message.Chat;
-                await handler.Run();
+                Department dep = this.departments.FirstOrDefault(
+                    x => t.Contains(x.Slug, StringComparison.OrdinalIgnoreCase)
+                );
+
+                if (dep != null)
+                {
+                    await HandleRoomRequest(message, dep, AvailabilityType.Free);
+                }
+                else
+                {
+                    HelpHandler handler = this.handlersFactory.GetHandler<HelpHandler>();
+                    handler.Chat = message.Chat;
+                    await handler.Run();
+                }
             }
         }
 

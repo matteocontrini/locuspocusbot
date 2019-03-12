@@ -75,7 +75,7 @@ namespace LocusPocusBot.Rooms
             {
                 string roomName = item.Value["room_name"].ToString();
 
-                if (department == Department.Povo)
+                if (department.Slug == "povo")
                 {
                     // Keep only the name of the room, like "B107"
                     // Strips parentheses, bla...
@@ -90,7 +90,7 @@ namespace LocusPocusBot.Rooms
                         continue;
                     }
                 }
-                else if (department == Department.Mesiano)
+                else if (department.Slug == "mesiano")
                 {
                     if (roomName.StartsWith("Aula "))
                     {
@@ -105,7 +105,7 @@ namespace LocusPocusBot.Rooms
                         continue;
                     }
                 }
-                else if (department == Department.Psicologia)
+                else if (department.Slug == "psicologia")
                 {
                     if (roomName.StartsWith("Laboratorio informatico"))
                     {
