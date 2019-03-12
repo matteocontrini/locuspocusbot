@@ -173,7 +173,7 @@ namespace LocusPocusBot.Rooms
                     (x.FreeInterval.HasEnd && y.FreeInterval.HasEnd &&
                      x.FreeInterval.End == y.FreeInterval.End))
                 {
-                    return string.Compare(x.Name, y.Name);
+                    return CompareNames(x.Name, y.Name);
                 }
 
                 // The room x is free until the end of the day,
@@ -205,10 +205,28 @@ namespace LocusPocusBot.Rooms
             // Sort all rooms by name
             groups[2].Rooms.Sort((x, y) =>
             {
-                return x.Name.CompareTo(y.Name);
+                return CompareNames(x.Name, y.Name);
             });
 
             return groups;
+        }
+
+        private int CompareNames(string x, string y)
+        {
+            // If one of the two strings is a single-digit number,
+            // add left padding with a zero
+
+            if (x.Length == 1 && x[0] >= '1' && x[0] <= '9')
+            {
+                x = '0' + x;
+            }
+
+            if (y.Length == 1 && y[0] >= '1' && y[0] <= '9')
+            {
+                y = '0' + y;
+            }
+
+            return string.Compare(x, y);
         }
     }
 }
