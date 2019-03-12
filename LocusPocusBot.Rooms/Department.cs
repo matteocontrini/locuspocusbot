@@ -214,14 +214,16 @@ namespace LocusPocusBot.Rooms
         private int CompareNames(string x, string y)
         {
             // If one of the two strings is a single-digit number,
-            // add left padding with a zero
+            // add left padding with a zero.
+            // Example: "1" is less than "12"
+            // Example: "1-2" is less than "3"
 
-            if (x.Length == 1 && x[0] >= '1' && x[0] <= '9')
+            if ((x.Length == 1 || x[1] == '-') && x[0] >= '1' && x[0] <= '9')
             {
                 x = '0' + x;
             }
 
-            if (y.Length == 1 && y[0] >= '1' && y[0] <= '9')
+            if ((y.Length == 1 || y[1] == '-') && y[0] >= '1' && y[0] <= '9')
             {
                 y = '0' + y;
             }
