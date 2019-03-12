@@ -109,7 +109,7 @@ namespace LocusPocusBot.Rooms
                 {
                     if (roomName.StartsWith("Laboratorio informatico"))
                     {
-                        roomName = "LAB" + roomName.Substring(24);
+                        roomName = "Lab " + roomName.Substring(24);
                     }
                     else if (roomName == "Aula Magna")
                     {
@@ -128,6 +128,45 @@ namespace LocusPocusBot.Rooms
                         {
                             continue;
                         }
+                    }
+                }
+                else if (department.Slug == "sociologia")
+                {
+                    string[] roomNameParts = roomName.Split(" ");
+
+                    if (roomNameParts[0] == "Aula")
+                    {
+                        if (roomNameParts[1] == "Kessler")
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            roomName = roomNameParts[1];
+                        }
+                    }
+                    else if (roomNameParts[0] == "Laboratorio")
+                    {
+                        roomName = "Lab " + roomNameParts[1];
+                    }
+                    else if (roomNameParts[0] == "Sala")
+                    {
+                        if (roomNameParts[1] == "Studio" || roomNameParts[1] == "Gruppi")
+                        {
+                            roomName = roomName.Substring(5);
+                        }
+                        else if (roomNameParts[1] == "archeologica")
+                        {
+                            roomName = "Archeologica";
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        continue;
                     }
                 }
 

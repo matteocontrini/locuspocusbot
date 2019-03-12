@@ -87,7 +87,7 @@ namespace LocusPocusBot
             services.UseConfigurationValidation();
             services.ConfigureValidatableSetting<BotConfiguration>(hostContext.Configuration.GetSection("Bot"));
             services.ConfigureValidatableSetting<DatabaseConfiguration>(hostContext.Configuration.GetSection("Database"));
-            
+
             services.AddDbContext<BotContext>();
 
             // This also registers the service as a transient service
@@ -101,7 +101,8 @@ namespace LocusPocusBot
             {
                 new Department("E0503", "Povo", "povo"),
                 new Department("E0301", "Mesiano", "mesiano"),
-                new Department("E0705", "Psicologia", "psicologia")
+                new Department("E0705", "Psicologia", "psicologia"),
+                new Department("E0601", "Sociologia", "sociologia")
             });
 
             services.AddHostedService<BotHostedService>();

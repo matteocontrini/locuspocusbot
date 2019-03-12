@@ -17,14 +17,15 @@ namespace LocusPocusBot.Handlers
         {
             StringBuilder msg = new StringBuilder();
 
+            // TODO: list commands line by line when more departments are supported
             msg.AppendLine("Ciao! 🤓");
             msg.AppendLine();
             msg.AppendLine("Sono *LocusPocus* e ti posso aiutare a trovare le aule libere presso i poli dell'Università di Trento 🎓");
             msg.AppendLine();
-            msg.AppendLine("Scrivimi /povo, /mesiano o /psicologia per ottenere la lista delle aule libere.");
+            msg.AppendLine("Scrivimi /povo, /mesiano, /psicologia o /sociologia per ottenere la lista delle aule libere.");
             msg.AppendLine();
             msg.AppendLine("Altre info in /aiuto");
-            
+
             await this.bot.Client.SendTextMessageAsync(
                 chatId: this.Chat.Id,
                 text: msg.ToString(),
