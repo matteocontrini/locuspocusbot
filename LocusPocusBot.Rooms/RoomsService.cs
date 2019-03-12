@@ -109,7 +109,7 @@ namespace LocusPocusBot.Rooms
                 {
                     if (roomName.StartsWith("Laboratorio informatico"))
                     {
-                        roomName = "LAB" + roomName.Substring(24);
+                        roomName = "Lab " + roomName.Substring(24);
                     }
                     else if (roomName == "Aula Magna")
                     {
@@ -132,29 +132,30 @@ namespace LocusPocusBot.Rooms
                 }
                 else if (department.Slug == "sociologia")
                 {
-                    string[] rootNameParts = roomName.Split(" ");
+                    string[] roomNameParts = roomName.Split(" ");
 
-                    if (rootNameParts[0] == "Aula")
+                    if (roomNameParts[0] == "Aula")
                     {
-                        if (rootNameParts[1] == "Kessler") {
+                        if (roomNameParts[1] == "Kessler")
+                        {
                             continue;
                         }
                         else
                         {
-                            roomName = rootNameParts[1];
+                            roomName = roomNameParts[1];
                         }
                     }
-                    else if (rootNameParts[0] == "Laboratorio")
+                    else if (roomNameParts[0] == "Laboratorio")
                     {
-                        roomName = "Lab " + rootNameParts[1];
+                        roomName = "Lab " + roomNameParts[1];
                     }
-                    else if (rootNameParts[0] == "Sala")
+                    else if (roomNameParts[0] == "Sala")
                     {
-                        if (rootNameParts[1] == "Studio" || rootNameParts[1] == "Gruppi")
+                        if (roomNameParts[1] == "Studio" || roomNameParts[1] == "Gruppi")
                         {
                             roomName = roomName.Substring(5);
                         }
-                        else if (rootNameParts[1] == "archeologica")
+                        else if (roomNameParts[1] == "archeologica")
                         {
                             roomName = "Archeologica";
                         }
