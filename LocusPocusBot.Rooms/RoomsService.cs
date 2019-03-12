@@ -130,6 +130,44 @@ namespace LocusPocusBot.Rooms
                         }
                     }
                 }
+                else if (department.Slug == "sociologia")
+                {
+                    string[] rootNameParts = roomName.Split(" ");
+
+                    if (rootNameParts[0] == "Aula")
+                    {
+                        if (rootNameParts[1] == "Kessler") {
+                            continue;
+                        }
+                        else
+                        {
+                            roomName = rootNameParts[1];
+                        }
+                    }
+                    else if (rootNameParts[0] == "Laboratorio")
+                    {
+                        roomName = "Lab " + rootNameParts[1];
+                    }
+                    else if (rootNameParts[0] == "Sala")
+                    {
+                        if (rootNameParts[1] == "Studio" || rootNameParts[1] == "Gruppi")
+                        {
+                            roomName = roomName.Substring(5);
+                        }
+                        else if (rootNameParts[1] == "archeologica")
+                        {
+                            roomName = "Archeologica";
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
 
                 Room room = new Room(item.Key, roomName);
                 rooms.Add(room);
