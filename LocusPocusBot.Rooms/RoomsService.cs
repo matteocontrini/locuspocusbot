@@ -100,7 +100,7 @@ namespace LocusPocusBot.Rooms
                     {
                         roomName = "Biblioteca";
                     }
-                    else
+                    else if (roomName == "studio docente")
                     {
                         continue;
                     }
