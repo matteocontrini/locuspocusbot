@@ -1,8 +1,8 @@
-﻿using NetEscapades.Configuration.Validation;
+﻿using System;
 
 namespace LocusPocusBot
 {
-    public class BotConfiguration : IValidatable
+    public class BotConfiguration
     {
         public string BotToken { get; set; }
 
@@ -10,7 +10,7 @@ namespace LocusPocusBot
         {
             if (string.IsNullOrWhiteSpace(this.BotToken))
             {
-                throw new SettingsValidationException(nameof(BotConfiguration), nameof(this.BotToken), "must be a non-empty string");
+                throw new Exception("BotConfiguration.BotToken must be a non-empty string");
             }
         }
     }

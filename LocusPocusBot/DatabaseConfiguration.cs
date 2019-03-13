@@ -1,8 +1,8 @@
-﻿using NetEscapades.Configuration.Validation;
+﻿using System;
 
 namespace LocusPocusBot
 {
-    public class DatabaseConfiguration : IValidatable
+    public class DatabaseConfiguration
     {
         public string ConnectionString { get; set; }
 
@@ -10,7 +10,7 @@ namespace LocusPocusBot
         {
             if (string.IsNullOrWhiteSpace(this.ConnectionString))
             {
-                throw new SettingsValidationException(nameof(DatabaseConfiguration), nameof(this.ConnectionString), "must be a non-empty string");
+                throw new Exception("DatabaseConfiguration.ConnectionString must be a non-empty string");
             }
         }
     }

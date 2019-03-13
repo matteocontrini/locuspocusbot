@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace LocusPocusBot.Data
 {
@@ -15,8 +16,11 @@ namespace LocusPocusBot.Data
             if (!optionsBuilder.IsConfigured)
             {
                 IHost host = Program.Host;
-                DatabaseConfiguration conf = host.Services.GetRequiredService<DatabaseConfiguration>();
-                string connectionString = conf.ConnectionString;
+
+                IOptions<DatabaseConfiguration> options =
+                    host.Services.GetRequiredService<IOptions<DatabaseConfiguration>>();
+
+                string connectionString = options.Value.ConnectionString;
                 
                 optionsBuilder.UseMySql(connectionString);
             }

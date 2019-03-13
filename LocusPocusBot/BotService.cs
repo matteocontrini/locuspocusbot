@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using System.Net;
 using System.Net.Http;
 using Telegram.Bot;
@@ -11,7 +12,7 @@ namespace LocusPocusBot
         public TelegramBotClient Client { get; }
         public User Me { get; set; }
 
-        public BotService(BotConfiguration config)
+        public BotService(IOptions<BotConfiguration> options)
         {
             HttpClient client = new HttpClient(new SocketsHttpHandler()
             {
@@ -19,7 +20,7 @@ namespace LocusPocusBot
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             });
 
-            this.Client = new TelegramBotClient(config.BotToken, client);
+            this.Client = new TelegramBotClient(options.Value.BotToken, client);
         }
     }
 }
