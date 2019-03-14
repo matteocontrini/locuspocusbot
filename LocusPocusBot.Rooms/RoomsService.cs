@@ -204,7 +204,7 @@ namespace LocusPocusBot.Rooms
                     }
                     else if (roomName.StartsWith("Sala "))
                     {
-                        roomName = Char.ToUpper(roomName[5]) + roomName.Substring(6).Replace(" - ", " ");
+                        roomName = char.ToUpper(roomName[5]) + roomName.Substring(6).Replace(" - ", " ");
                     }
                     else
                     {
