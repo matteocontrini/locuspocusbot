@@ -8,6 +8,8 @@ A previous version of this bot was developed in Go and has been available for ab
 
 MySQL is required for the bot to work. Data about users and groups will be stored in the database. The application is tested to work with **MySQL 8.0.15.**
 
+When running the application, database migrations are automatically applied.
+
 ## Configuration
 
 Configuration of the application is done through the `appsettings.json` file read from the current working directory at startup.
@@ -16,17 +18,25 @@ Examples for [development](https://github.com/matteocontrini/locuspocusbot/blob/
 
 ## Running for development
 
-Make sure that you have the .NET Core 2.2 SDK and runtime installed on your system.
+Choose one of the following methods:
 
 ### Visual Studio
 
-Make sure that the `LocusPocusBot/bin/Debug/netcoreapp2.2` directory contains the `appsettings.json` file.
+Requirements:
+
+- .NET Core 2.2 SDK is installed
+- MySQL is running on the host and port specified in the `appsettings.json` file
+- The `LocusPocusBot/bin/Debug/netcoreapp2.2` directory contains the `appsettings.json` file
 
 Run with the nice green button.
 
 ### dotnet CLI
 
-Make sure that the `LocusPocusBot` directory contains the `appsettings.json` file.
+Requirements:
+
+- .NET Core 2.2 SDK is installed
+- MySQL is running on the host and port specified in the `appsettings.json` file
+- The `LocusPocusBot` directory contains the `appsettings.json` file
 
 Run with the dotnet CLI by executing:
 
@@ -37,7 +47,7 @@ dotnet run
 
 ### Docker Compose
 
-A development Docker Compose file would look like this:
+A basic development Docker Compose file (not including MySQL) would look like this:
 
 ```yaml
 version: '3'
