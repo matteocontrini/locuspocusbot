@@ -2,6 +2,7 @@
 using NodaTime;
 using NodaTime.Extensions;
 using NodaTime.Text;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.RegularExpressions;
@@ -176,7 +177,7 @@ namespace LocusPocusBot.Rooms
                     }
                     else if (roomName.StartsWith("Laboratorio m"))
                     {
-                        roomName = "Lab " + roomName.Substring(25);
+                        roomName = "Lab " + roomName[25];
                     }
                     else
                     {
@@ -185,7 +186,30 @@ namespace LocusPocusBot.Rooms
                 }
                 else if (department.Slug == "economia")
                 {
-                    // TODO: filter and rename rooms
+                    if (roomName.StartsWith("Aula informatica "))
+                    {
+                        roomName = "Inf " + roomName.Substring(17).Replace(" - ", " ").ToUpper();
+                    }
+                    else if (roomName.StartsWith("Aula "))
+                    {
+                        roomName = roomName.Substring(5);
+                    }
+                    else if (roomName == "Sala corso Nettuno")
+                    {
+                        roomName = "Nettuno";
+                    }
+                    else if (roomName == "Sala Conferenze")
+                    {
+                        continue;
+                    }
+                    else if (roomName.StartsWith("Sala "))
+                    {
+                        roomName = Char.ToUpper(roomName[5]) + roomName.Substring(6).Replace(" - ", " ");
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
 
                 Room room = new Room(item.Key, roomName);
