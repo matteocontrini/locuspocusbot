@@ -164,6 +164,25 @@ namespace LocusPocusBot.Rooms
                         continue;
                     }
                 }
+                else if (department.Slug == "lettere")
+                {
+                    Match match = Regex.Match(roomName, "^Aula ([0-9]{1,3})");
+
+                    if (match.Success)
+                    {
+                        // Keep only the name of the room, like "001"
+                        // Strips everything else
+                        roomName = match.Groups[1].Value;
+                    }
+                    else if (roomName.StartsWith("Laboratorio m"))
+                    {
+                        roomName = "Lab " + roomName.Substring(25);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
 
                 Room room = new Room(item.Key, roomName);
                 rooms.Add(room);
