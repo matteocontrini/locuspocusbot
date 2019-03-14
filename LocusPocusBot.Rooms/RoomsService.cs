@@ -183,6 +183,10 @@ namespace LocusPocusBot.Rooms
                         continue;
                     }
                 }
+                else if (department.Slug == "economia")
+                {
+                    // TODO: filter and rename rooms
+                }
 
                 Room room = new Room(item.Key, roomName);
                 rooms.Add(room);
