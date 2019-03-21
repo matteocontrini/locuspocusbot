@@ -95,6 +95,11 @@ namespace LocusPocusBot.Rooms
                     if (roomName.StartsWith("Aula "))
                     {
                         roomName = roomName.Substring(roomName.IndexOf(' ') + 1);
+
+                        if (roomName == "1R" || roomName == "2R")
+                        {
+                            continue;
+                        }
                     }
                     else if (roomName.StartsWith("Biblioteca"))
                     {
