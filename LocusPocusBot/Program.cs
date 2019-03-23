@@ -62,6 +62,7 @@ namespace LocusPocusBot
 
                 // Required to stop all the threads.
                 // With "return 1", the process could actually stay online forever
+
                 Environment.Exit(1);
             }
         }
@@ -100,10 +101,10 @@ namespace LocusPocusBot
             {
                 new Department("E0503", "Povo", "povo"),
                 new Department("E0301", "Mesiano", "mesiano"),
-                new Department("E0705", "Psicologia", "psicologia"),
                 new Department("E0601", "Sociologia", "sociologia"),
                 new Department("E0801", "Lettere", "lettere"),
-                new Department("E0101", "Economia", "economia")
+                new Department("E0101", "Economia", "economia"),
+                new Department("E0705", "Psicologia", "psicologia"),
             });
 
             services.AddHostedService<SettingsValidationHostedService>();

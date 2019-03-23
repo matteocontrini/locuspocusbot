@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using LocusPocusBot.Rooms;
+using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 
@@ -7,20 +8,30 @@ namespace LocusPocusBot.Handlers
     public class HelpHandler : HandlerBase
     {
         private readonly IBotService bot;
+        private readonly Department[] departments;
 
-        public HelpHandler(IBotService botService)
+        public HelpHandler(IBotService botService,
+                           Department[] departments)
         {
             this.bot = botService;
+            this.departments = departments;
         }
 
         public override async Task Run()
         {
             StringBuilder msg = new StringBuilder();
-
-            // TODO: consider listing commands line by line
+            
             msg.AppendLine("*LocusPocus* è il bot per controllare la disponibilità delle aule presso i poli dell'Università di Trento 🎓");
             msg.AppendLine();
-            msg.AppendLine("👉 *Scrivi* /povo, /mesiano, /psicologia, /sociologia, /lettere *oppure* /economia *per ottenere la lista delle aule libere*");
+            msg.AppendLine("👉 *Usa uno di questi comandi per ottenere la lista delle aule libere*");
+            msg.AppendLine();
+
+            foreach (Department dep in this.departments)
+            {
+                msg.Append('/');
+                msg.AppendLine(dep.Slug);
+            }
+
             msg.AppendLine();
             msg.AppendLine("🤫 Il bot è sviluppato da Matteo Contrini (@matteocontrini) con la collaborazione di Emilio Molinari");
             msg.AppendLine();
