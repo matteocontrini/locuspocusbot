@@ -198,16 +198,17 @@ namespace LocusPocusBot.Rooms
                     {
                         roomName = roomName.Substring(5);
                     }
-                    else if (roomName == "Sala corso Nettuno")
-                    {
-                        roomName = "Nettuno";
-                    }
-                    else if (roomName == "Sala Conferenze")
-                    {
-                        continue;
-                    }
                     else if (roomName.StartsWith("Sala "))
                     {
+                        if (roomName == "Sala corso Nettuno" ||
+                            roomName == "Sala seminari" ||
+                            roomName == "Sala Conferenze" ||
+                            roomName.StartsWith("Sala studio") ||
+                            roomName.StartsWith("Sala DEM"))
+                        {
+                            continue;
+                        }
+
                         roomName = char.ToUpper(roomName[5]) + roomName.Substring(6).Replace(" - ", " ");
                     }
                     else
