@@ -79,7 +79,7 @@ namespace LocusPocusBot.Rooms
                 {
                     // Keep only the name of the room, like "B107"
                     // Strips parentheses, bla...
-                    Match match = Regex.Match(roomName, "[A-B]{1}[0-9]{3}");
+                    Match match = Regex.Match(roomName, "[AB]{1}[0-9]{3}");
 
                     if (match.Success)
                     {
@@ -94,7 +94,7 @@ namespace LocusPocusBot.Rooms
                 {
                     if (roomName.StartsWith("Aula "))
                     {
-                        roomName = roomName.Substring(roomName.IndexOf(' ') + 1);
+                        roomName = roomName.Substring(5);
 
                         if (roomName == "1R" || roomName == "2R")
                         {
@@ -105,39 +105,34 @@ namespace LocusPocusBot.Rooms
                     {
                         roomName = "Biblioteca";
                     }
-                    else if (roomName == "studio docente")
+                    // Keep EALAB, skip everything else
+                    else if (roomName != "EALAB")
                     {
                         continue;
                     }
                 }
                 else if (department.Slug == "psicologia")
                 {
-                    if (roomName.StartsWith("Laboratorio informatico"))
+                    Match match = Regex.Match(roomName, "^Aula ([0-9]{1,2}|Magna)");
+
+                    if (match.Success)
+                    {
+                        // Keep only the name of the room, like "1", "11" or "Magna"
+                        // Strips floor, etc...
+                        roomName = match.Groups[1].Value;
+                    }
+                    else if (roomName.StartsWith("Laboratorio informatico "))
                     {
                         roomName = "Lab " + roomName.Substring(24);
                     }
-                    else if (roomName == "Aula Magna")
+                    else
                     {
-                        roomName = "Magna";
-                    }
-                    else {
-                        // Keep only the name of the room, like "1" or "11"
-                        // Strips floor, etc...
-                        Match match = Regex.Match(roomName, "[0-9]{1,2}");
-
-                        if (match.Success)
-                        {
-                            roomName = match.Value;
-                        }
-                        else
-                        {
-                            continue;
-                        }
+                        continue;
                     }
                 }
                 else if (department.Slug == "sociologia")
                 {
-                    string[] roomNameParts = roomName.Split(" ");
+                    string[] roomNameParts = roomName.Split(' ');
 
                     if (roomNameParts[0] == "Aula")
                     {
@@ -168,6 +163,52 @@ namespace LocusPocusBot.Rooms
                         {
                             continue;
                         }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else if (department.Slug == "lettere")
+                {
+                    Match match = Regex.Match(roomName, "^Aula ([0-9]{1,3})");
+
+                    if (match.Success)
+                    {
+                        // Keep only the name of the room, like "001"
+                        // Strips everything else
+                        roomName = match.Groups[1].Value;
+                    }
+                    else if (roomName.StartsWith("Laboratorio m"))
+                    {
+                        roomName = "Lab " + roomName[25];
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else if (department.Slug == "economia")
+                {
+                    if (roomName.StartsWith("Aula informatica "))
+                    {
+                        roomName = "Inf " + roomName.Substring(17).Replace(" - ", " ").ToUpper();
+                    }
+                    else if (roomName.StartsWith("Aula "))
+                    {
+                        roomName = roomName.Substring(5);
+                    }
+                    else if (roomName == "Sala corso Nettuno")
+                    {
+                        roomName = "Nettuno";
+                    }
+                    else if (roomName == "Sala Conferenze")
+                    {
+                        continue;
+                    }
+                    else if (roomName.StartsWith("Sala "))
+                    {
+                        roomName = char.ToUpper(roomName[5]) + roomName.Substring(6).Replace(" - ", " ");
                     }
                     else
                     {

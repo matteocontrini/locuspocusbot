@@ -17,10 +17,10 @@ namespace LocusPocusBot.Handlers
         {
             StringBuilder msg = new StringBuilder();
 
-            // TODO: list commands line by line when more departments are supported
+            // TODO: consider listing commands line by line
             msg.AppendLine("*LocusPocus* è il bot per controllare la disponibilità delle aule presso i poli dell'Università di Trento 🎓");
             msg.AppendLine();
-            msg.AppendLine("👉 *Scrivi* /povo, /mesiano, /psicologia *oppure* /sociologia *per ottenere la lista delle aule libere*");
+            msg.AppendLine("👉 *Scrivi* /povo, /mesiano, /psicologia, /sociologia, /lettere *oppure* /economia *per ottenere la lista delle aule libere*");
             msg.AppendLine();
             msg.AppendLine("🤫 Il bot è sviluppato da Matteo Contrini (@matteocontrini) con la collaborazione di Emilio Molinari");
             msg.AppendLine();

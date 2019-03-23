@@ -83,7 +83,7 @@ namespace LocusPocusBot
         {
             // TODO CORE 3.0: Change after https://github.com/aspnet/Hosting/issues/1346 is released
             services.Configure<ConsoleLifetimeOptions>(console => console.SuppressStatusMessages = true);
-            
+
             services.Configure<BotConfiguration>(hostContext.Configuration.GetSection("Bot"));
             services.Configure<DatabaseConfiguration>(hostContext.Configuration.GetSection("Database"));
 
@@ -101,7 +101,9 @@ namespace LocusPocusBot
                 new Department("E0503", "Povo", "povo"),
                 new Department("E0301", "Mesiano", "mesiano"),
                 new Department("E0705", "Psicologia", "psicologia"),
-                new Department("E0601", "Sociologia", "sociologia")
+                new Department("E0601", "Sociologia", "sociologia"),
+                new Department("E0801", "Lettere", "lettere"),
+                new Department("E0101", "Economia", "economia")
             });
 
             services.AddHostedService<SettingsValidationHostedService>();
