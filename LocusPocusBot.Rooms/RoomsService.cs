@@ -11,7 +11,7 @@ namespace LocusPocusBot.Rooms
 {
     public class RoomsService : IRoomsService
     {
-        private readonly string easyRoomUrl = "https://easyroom.unitn.it/Orario/rooms_call.php";
+        private readonly string easyRoomUrl = "https://easyacademy.unitn.it/AgendaStudentiUnitn/rooms_call.php";
         private readonly HttpClient client;
 
         public RoomsService(HttpClient client)
