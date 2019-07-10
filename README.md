@@ -1,4 +1,4 @@
-# LocusPocusBot 2.0 [![Build Status](https://travis-ci.org/matteocontrini/locuspocusbot.svg?branch=master)](https://travis-ci.org/matteocontrini/locuspocusbot)
+# LocusPocusBot 2.0 [![Build Status](https://travis-ci.com/matteocontrini/locuspocusbot.svg?branch=dotnet)](https://travis-ci.com/matteocontrini/locuspocusbot)
 
 ## Previous versions
 
