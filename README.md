@@ -56,9 +56,9 @@ services:
   locuspocusbot:
     container_name: 'locuspocusbot'
     build: .
-  network_mode: 'host'
-  volumes:
-    - ./LocusPocusBot/appsettings.json:/app/appsettings.json
+    network_mode: 'host'
+    volumes:
+      - ./LocusPocusBot/appsettings.json:/app/appsettings.json
 ```
 
 This time make sure that the configuration file lies at `LocusPocusBot/appsettings.json`.
