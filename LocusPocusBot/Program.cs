@@ -1,4 +1,7 @@
-﻿using CustomConsoleLogger;
+﻿using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using LocusPocusBot.Data;
 using LocusPocusBot.Handlers;
 using LocusPocusBot.Rooms;
@@ -7,10 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
+using PlainConsoleLogger;
 
 namespace LocusPocusBot
 {
@@ -37,7 +37,6 @@ namespace LocusPocusBot
 
         static async Task Main(string[] args)
         {
-            // Get the logger
             ILogger logger = Host.Services.GetRequiredService<ILogger<Program>>();
 
             try
@@ -77,7 +76,7 @@ namespace LocusPocusBot
         private static void ConfigureLogging(HostBuilderContext hostContext, ILoggingBuilder logging)
         {
             logging.AddConfiguration(hostContext.Configuration.GetSection("Logging"));
-            logging.AddCustomConsole();
+            logging.AddPlainConsole();
         }
 
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)

@@ -14,12 +14,12 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="2.2.0" />
+    <PackageReference Include="PlainConsoleLogger" Version="2.2.0-beta" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />
     <PackageReference Include="Telegram.Bot" Version="14.10.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CustomConsoleLogger\CustomConsoleLogger.csproj" />
     <ProjectReference Include="..\LocusPocusBot.Rooms\LocusPocusBot.Rooms.csproj" />
   </ItemGroup>
 
