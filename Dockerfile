@@ -5,7 +5,6 @@ WORKDIR /app
 COPY *.sln .
 COPY LocusPocusBot/*.csproj ./LocusPocusBot/
 COPY LocusPocusBot.Rooms/*.csproj ./LocusPocusBot.Rooms/
-COPY CustomConsoleLogger/*.csproj ./CustomConsoleLogger/
 RUN dotnet restore
 
 # Copy all srcs and compile
