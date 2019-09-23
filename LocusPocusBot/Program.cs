@@ -31,7 +31,7 @@ namespace LocusPocusBot
                     .ConfigureAppConfiguration(ConfigureApp)
                     .ConfigureServices(ConfigureServices)
                     .ConfigureLogging(ConfigureLogging)
-                    .UseConsoleLifetime()
+                    .UseConsoleLifetime(opts => opts.SuppressStatusMessages = true)
                     .Build();
         }
 
@@ -81,9 +81,6 @@ namespace LocusPocusBot
 
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
         {
-            // TODO CORE 3.0: Change after https://github.com/aspnet/Hosting/issues/1346 is released
-            services.Configure<ConsoleLifetimeOptions>(console => console.SuppressStatusMessages = true);
-
             services.Configure<BotConfiguration>(hostContext.Configuration.GetSection("Bot"));
             services.Configure<DatabaseConfiguration>(hostContext.Configuration.GetSection("Database"));
 
