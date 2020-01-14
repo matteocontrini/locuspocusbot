@@ -24,9 +24,9 @@ Choose one of the following methods:
 
 Requirements:
 
-- .NET Core 3.0 SDK is installed
+- .NET Core 3.1 SDK is installed
 - MySQL is running on the host and port specified in the `appsettings.json` file
-- The `LocusPocusBot/bin/Debug/netcoreapp3.0` directory contains the `appsettings.json` file
+- The `LocusPocusBot/bin/Debug/netcoreapp3.1` directory contains the `appsettings.json` file
 
 Run with the nice green button.
 
@@ -34,7 +34,7 @@ Run with the nice green button.
 
 Requirements:
 
-- .NET Core 3.0 SDK is installed
+- .NET Core 3.1 SDK is installed
 - MySQL is running on the host and port specified in the `appsettings.json` file
 - The `LocusPocusBot` directory contains the `appsettings.json` file
 
