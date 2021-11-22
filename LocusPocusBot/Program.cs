@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using PlainConsoleLogger;
+using PlainConsoleLoggerFormatter;
 
 namespace LocusPocusBot
 {
@@ -28,11 +28,11 @@ namespace LocusPocusBot
         static Program()
         {
             Host = new HostBuilder()
-                    .ConfigureAppConfiguration(ConfigureApp)
-                    .ConfigureServices(ConfigureServices)
-                    .ConfigureLogging(ConfigureLogging)
-                    .UseConsoleLifetime(opts => opts.SuppressStatusMessages = true)
-                    .Build();
+                .ConfigureAppConfiguration(ConfigureApp)
+                .ConfigureServices(ConfigureServices)
+                .ConfigureLogging(ConfigureLogging)
+                .UseConsoleLifetime(opts => opts.SuppressStatusMessages = true)
+                .Build();
         }
 
         static async Task Main(string[] args)
@@ -76,7 +76,8 @@ namespace LocusPocusBot
         private static void ConfigureLogging(HostBuilderContext hostContext, ILoggingBuilder logging)
         {
             logging.AddConfiguration(hostContext.Configuration.GetSection("Logging"));
-            logging.AddPlainConsole();
+            logging.AddConsoleFormatter<PlainConsoleFormatter, PlainConsoleFormatterOptions>();
+            logging.AddConsole(options => options.FormatterName = nameof(PlainConsoleFormatter));
         }
 
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)

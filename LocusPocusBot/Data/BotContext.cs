@@ -21,8 +21,8 @@ namespace LocusPocusBot.Data
                     host.Services.GetRequiredService<IOptions<DatabaseConfiguration>>();
 
                 string connectionString = options.Value.ConnectionString;
-                
-                optionsBuilder.UseMySql(connectionString);
+
+                optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             }
         }
     }
