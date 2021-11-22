@@ -24,7 +24,7 @@ Choose one of the following methods:
 
 Requirements:
 
-- .NET Core 6.0 SDK is installed
+- .NET 6.0 SDK is installed
 - MySQL is running on the host and port specified in the `appsettings.json` file
 - The `LocusPocusBot/bin/Debug/net6.0` directory contains the `appsettings.json` file
 
@@ -34,7 +34,7 @@ Run with the nice green button.
 
 Requirements:
 
-- .NET Core 6.0 SDK is installed
+- .NET 6.0 SDK is installed
 - MySQL is running on the host and port specified in the `appsettings.json` file
 - The `LocusPocusBot` directory contains the `appsettings.json` file
 
