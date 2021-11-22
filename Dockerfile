@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /app
 
 # Copy sln and csproj and try to restore dependencies
@@ -16,7 +16,7 @@ FROM build AS publish
 WORKDIR /app/LocusPocusBot
 RUN dotnet publish -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/core/runtime:3.1 AS runtime
+FROM mcr.microsoft.com/dotnet/runtime:6.0 AS runtime
 WORKDIR /app
 COPY --from=publish /app/LocusPocusBot/out ./
 ENTRYPOINT ["dotnet", "LocusPocusBot.dll"]
