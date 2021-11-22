@@ -1,6 +1,7 @@
 ﻿using LocusPocusBot.Rooms;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 
 namespace LocusPocusBot.Handlers
@@ -11,7 +12,7 @@ namespace LocusPocusBot.Handlers
         private readonly Department[] departments;
 
         public StartHandler(IBotService botService,
-                            Department[] departments)
+            Department[] departments)
         {
             this.bot = botService;
             this.departments = departments;
@@ -20,10 +21,11 @@ namespace LocusPocusBot.Handlers
         public override async Task Run()
         {
             StringBuilder msg = new StringBuilder();
-            
+
             msg.AppendLine("Ciao! 🤓");
             msg.AppendLine();
-            msg.AppendLine("Sono *LocusPocus* e ti posso aiutare a trovare le aule libere presso i poli dell'Università di Trento 🎓");
+            msg.AppendLine(
+                "Sono *LocusPocus* e ti posso aiutare a trovare le aule libere presso i poli dell'Università di Trento 🎓");
             msg.AppendLine();
             msg.AppendLine("Usa uno di questi comandi per ottenere la lista delle aule libere:");
             msg.AppendLine();

@@ -4,6 +4,7 @@ using NodaTime.Text;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -117,7 +118,7 @@ namespace LocusPocusBot.Handlers
                 msg.Append("</strong>");
                 msg.AppendLine();
                 msg.AppendLine();
-                
+
                 foreach (RoomAvailability room in groups[2].Rooms)
                 {
                     AddRoomAvailability(msg, room);

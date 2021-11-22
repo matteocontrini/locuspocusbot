@@ -1,6 +1,7 @@
 ﻿using LocusPocusBot.Rooms;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 
 namespace LocusPocusBot.Handlers
@@ -20,7 +21,7 @@ namespace LocusPocusBot.Handlers
         public override async Task Run()
         {
             StringBuilder msg = new StringBuilder();
-            
+
             msg.AppendLine("*LocusPocus* è il bot per controllare la disponibilità delle aule presso i poli dell'Università di Trento 🎓");
             msg.AppendLine();
             msg.AppendLine("👉 *Usa uno di questi comandi per ottenere la lista delle aule libere*");
