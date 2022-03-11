@@ -13,21 +13,23 @@ namespace LocusPocusBot.Rooms
     {
         private readonly string easyRoomUrl = "https://easyacademy.unitn.it/AgendaStudentiUnitn/rooms_call.php";
         private readonly HttpClient client;
+        private readonly LocalDate today;
+        private readonly DateTimeZone timezone;
 
         public RoomsService(HttpClient client)
         {
             this.client = client;
+            
+            // Take the current date for Italy's timezone
+            this.timezone = DateTimeZoneProviders.Tzdb["Europe/Rome"];
+            this.today = SystemClock.Instance.InZone(this.timezone).GetCurrentDate();
         }
 
         public async Task<List<Room>> LoadRooms(Department department)
         {
-            // Take the current date for Italy's timezone
-            DateTimeZone zone = DateTimeZoneProviders.Tzdb["Europe/Rome"];
-            LocalDate now = SystemClock.Instance.InZone(zone).GetCurrentDate();
-
             // Format date like 13-10-2017
             LocalDatePattern pattern = LocalDatePattern.CreateWithInvariantCulture("dd-MM-yyyy");
-            string dateString = pattern.Format(now);
+            string dateString = pattern.Format(this.today);
 
             // Clear cached data of the previous day
             if (department.UpdatedAt != dateString)
@@ -232,11 +234,16 @@ namespace LocusPocusBot.Rooms
             // (they could be in random order)
             foreach (JToken item in eventsArray)
             {
-                Lecture lec = new Lecture(
-                    name: item["name"].ToString(),
-                    startTimestamp: item["timestamp_from"].ToObject<long>(),
-                    endTimestamp: item["timestamp_to"].ToObject<long>()
-                );
+                int[] from = ParseTime(item["from"].ToString());
+                int[] to = ParseTime(item["to"].ToString());
+
+                LocalDateTime start = this.today.At(new LocalTime(from[0], from[1], 0));
+                LocalDateTime end = this.today.At(new LocalTime(to[0], to[1], 0));
+
+                Instant startInstant = start.InZoneStrictly(this.timezone).ToInstant();
+                Instant endInstant = end.InZoneStrictly(this.timezone).ToInstant();
+                
+                Lecture lec = new Lecture(item["name"].ToString(), startInstant, endInstant);
 
                 string roomId = item["CodiceAula"].ToString();
 
@@ -248,6 +255,16 @@ namespace LocusPocusBot.Rooms
                     r.Lectures.Add(lec);
                 }
             }
+        }
+
+        private int[] ParseTime(string time)
+        {
+            string[] parts = time.Split(':');
+            return new[]
+            {
+                int.Parse(parts[0]),
+                int.Parse(parts[1])
+            };
         }
     }
 }

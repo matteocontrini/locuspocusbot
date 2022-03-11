@@ -10,11 +10,11 @@ namespace LocusPocusBot.Rooms
 
         public Instant EndInstant { get; set; }
 
-        public Lecture(string name, long startTimestamp, long endTimestamp)
+        public Lecture(string name, Instant startInstant, Instant endInstant)
         {
             this.Name = name;
-            this.StartInstant = Instant.FromUnixTimeSeconds(startTimestamp);
-            this.EndInstant = Instant.FromUnixTimeSeconds(endTimestamp);
+            this.StartInstant = startInstant;
+            this.EndInstant = endInstant;
         }
     }
 }
