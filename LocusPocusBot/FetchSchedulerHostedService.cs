@@ -4,23 +4,24 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LocusPocusBot
 {
     public class FetchSchedulerHostedService : IHostedService
     {
-        private readonly IRoomsService roomsService;
         private readonly ILogger<FetchSchedulerHostedService> logger;
         private readonly Department[] departments;
+        private readonly IServiceProvider serviceProvider;
         private Timer timer;
 
-        public FetchSchedulerHostedService(IRoomsService roomsService,
-                                           ILogger<FetchSchedulerHostedService> logger,
-                                           Department[] departments)
+        public FetchSchedulerHostedService(ILogger<FetchSchedulerHostedService> logger,
+            Department[] departments,
+            IServiceProvider serviceProvider)
         {
-            this.roomsService = roomsService;
             this.logger = logger;
             this.departments = departments;
+            this.serviceProvider = serviceProvider;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -52,17 +53,20 @@ namespace LocusPocusBot
 
         private async Task Fetch()
         {
+            using IServiceScope scope = this.serviceProvider.CreateScope();
+            IRoomsService service = scope.ServiceProvider.GetRequiredService<IRoomsService>();
+
             foreach (Department department in this.departments)
             {
-                this.logger.LogInformation($"Refreshing data for {department.Id}/{department.Name}");
+                this.logger.LogInformation("Refreshing data for {Id}/{Name}", department.Id, department.Name);
 
                 try
                 {
-                    department.Rooms = await this.roomsService.LoadRooms(department);
+                    department.Rooms = await service.LoadRooms(department);
                 }
                 catch (Exception ex)
                 {
-                    this.logger.LogError(ex, $"Exception while refreshing {department.Id}/{department.Name}");
+                    this.logger.LogError(ex, "Exception while refreshing {Id}/{Name}", department.Id, department.Name);
                 }
             }
 
