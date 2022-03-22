@@ -13,7 +13,6 @@ namespace LocusPocusBot.Rooms
     {
         private readonly string easyRoomUrl = "https://easyacademy.unitn.it/AgendaStudentiUnitn/rooms_call.php";
         private readonly HttpClient client;
-        private readonly LocalDate today;
         private readonly DateTimeZone timezone;
 
         public RoomsService(HttpClient client)
@@ -22,14 +21,18 @@ namespace LocusPocusBot.Rooms
             
             // Take the current date for Italy's timezone
             this.timezone = DateTimeZoneProviders.Tzdb["Europe/Rome"];
-            this.today = SystemClock.Instance.InZone(this.timezone).GetCurrentDate();
+        }
+
+        private LocalDate GetCurrentDate()
+        {
+            return SystemClock.Instance.InZone(this.timezone).GetCurrentDate();
         }
 
         public async Task<List<Room>> LoadRooms(Department department)
         {
             // Format date like 13-10-2017
             LocalDatePattern pattern = LocalDatePattern.CreateWithInvariantCulture("dd-MM-yyyy");
-            string dateString = pattern.Format(this.today);
+            string dateString = pattern.Format(GetCurrentDate());
 
             // Clear cached data of the previous day
             if (department.UpdatedAt != dateString)
@@ -237,8 +240,9 @@ namespace LocusPocusBot.Rooms
                 int[] from = ParseTime(item["from"].ToString());
                 int[] to = ParseTime(item["to"].ToString());
 
-                LocalDateTime start = this.today.At(new LocalTime(from[0], from[1], 0));
-                LocalDateTime end = this.today.At(new LocalTime(to[0], to[1], 0));
+                LocalDate today = GetCurrentDate();
+                LocalDateTime start = today.At(new LocalTime(from[0], from[1], 0));
+                LocalDateTime end = today.At(new LocalTime(to[0], to[1], 0));
 
                 Instant startInstant = start.InZoneStrictly(this.timezone).ToInstant();
                 Instant endInstant = end.InZoneStrictly(this.timezone).ToInstant();
