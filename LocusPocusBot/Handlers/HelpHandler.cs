@@ -34,7 +34,7 @@ namespace LocusPocusBot.Handlers
             }
 
             msg.AppendLine();
-            msg.AppendLine("🤫 Il bot è sviluppato da Matteo Contrini (@matteocontrini) con la collaborazione di Emilio Molinari");
+            msg.AppendLine("🤫 Il bot è sviluppato da Matteo Contrini (@matteosonoio) con la collaborazione di Emilio Molinari");
             msg.AppendLine();
             msg.AppendLine("👏 Un grazie speciale a Alessandro Conti per il nome del bot e a [Dario Crisafulli](https://botfactory.it/#chisiamo) per il logo!");
             msg.AppendLine();
