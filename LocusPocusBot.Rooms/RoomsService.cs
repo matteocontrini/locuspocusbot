@@ -19,7 +19,7 @@ namespace LocusPocusBot.Rooms
         public RoomsService(HttpClient client)
         {
             this.client = client;
-            
+
             // Take the current date for Italy's timezone
             this.timezone = DateTimeZoneProviders.Tzdb["Europe/Rome"];
             this.today = SystemClock.Instance.InZone(this.timezone).GetCurrentDate();
@@ -237,12 +237,18 @@ namespace LocusPocusBot.Rooms
                 int[] from = ParseTime(item["from"].ToString());
                 int[] to = ParseTime(item["to"].ToString());
 
+                // Easter at Psicologia and maybe other feast days 
+                if (to[0] == 24 && to[1] == 00)
+                {
+                    to = new[] { 23, 59 };
+                }
+
                 LocalDateTime start = this.today.At(new LocalTime(from[0], from[1], 0));
                 LocalDateTime end = this.today.At(new LocalTime(to[0], to[1], 0));
 
                 Instant startInstant = start.InZoneStrictly(this.timezone).ToInstant();
                 Instant endInstant = end.InZoneStrictly(this.timezone).ToInstant();
-                
+
                 Lecture lec = new Lecture(item["name"].ToString(), startInstant, endInstant);
 
                 string roomId = item["CodiceAula"].ToString();
