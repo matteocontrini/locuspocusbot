@@ -37,7 +37,7 @@ void ConfigureApp(HostBuilderContext hostContext, IConfigurationBuilder configAp
 {
     // Load the application settings
     configApp.SetBasePath(Directory.GetCurrentDirectory());
-    configApp.AddJsonFile("appsettings.json");
+    configApp.AddJsonFile("appsettings.json", optional: true);
     configApp.AddEnvironmentVariables();
 }
 
