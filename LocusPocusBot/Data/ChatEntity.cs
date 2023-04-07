@@ -1,12 +1,13 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
+using MongoDB.Bson;
 
 namespace LocusPocusBot.Data
 {
     public class ChatEntity
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)] // disables autoinc
-        public long Id { get; set; }
+        public ObjectId Id { get; set; }
+
+        public long ChatId { get; set; }
 
         public string Type { get; set; }
 

@@ -15,19 +15,19 @@ namespace LocusPocusBot
         private readonly ILogger logger;
         private readonly IHandlersFactory handlersFactory;
         private readonly IBotService bot;
-        private readonly BotContext db;
         private readonly Department[] departments;
+        private readonly IDatabaseService db;
 
         public UpdateProcessor(ILogger<UpdateProcessor> logger,
-                               IHandlersFactory handlersFactory,
-                               IBotService botService,
-                               BotContext context,
-                               Department[] departments)
+            IHandlersFactory handlersFactory,
+            IBotService botService,
+            IDatabaseService db,
+            Department[] departments)
         {
             this.logger = logger;
             this.handlersFactory = handlersFactory;
             this.bot = botService;
-            this.db = context;
+            this.db = db;
             this.departments = departments;
         }
 
@@ -35,13 +35,13 @@ namespace LocusPocusBot
         {
             if (update.Type == UpdateType.Message)
             {
-                await LogChat(update.Message.Chat);
+                await this.db.LogChat(update.Message.Chat);
 
                 await HandleMessage(update.Message);
             }
             else if (update.Type == UpdateType.CallbackQuery)
             {
-                await LogUser(update.CallbackQuery.From);
+                await this.db.LogUser(update.CallbackQuery.From);
 
                 await HandlerCallbackQuery(update.CallbackQuery);
             }
@@ -163,10 +163,10 @@ namespace LocusPocusBot
             AvailabilityType type,
             CallbackQuery query = null)
         {
-            long chatId = message?.Chat?.Id ?? query.Message.Chat.Id;
+            long chatId = message?.Chat.Id ?? query.Message.Chat.Id;
             RequestType requestType = query != null ? RequestType.CallbackQuery : RequestType.Message;
-            
-            await LogUsage(chatId, requestType, type, dep);
+
+            await this.db.LogUsage(chatId, requestType, type, dep);
 
             RoomsHandler handler = this.handlersFactory.GetHandler<RoomsHandler>();
             handler.Chat = message.Chat;
@@ -174,87 +174,6 @@ namespace LocusPocusBot
             handler.RequestedDepartment = dep;
             handler.RequestedGroup = type;
             await handler.Run();
-        }
-
-        private async Task LogUser(User user)
-        {
-            ChatEntity existing = this.db.Chats.Find((long)user.Id);
-
-            if (existing == null)
-            {
-                ChatEntity entity = new ChatEntity()
-                {
-                    Id = user.Id,
-                    Type = ChatType.Private.ToString(),
-                    Username = user.Username,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    UpdatedAt = DateTime.UtcNow
-                };
-
-                this.db.Add(entity);
-            }
-            else
-            {
-                existing.Username = user.Username;
-                existing.FirstName = user.FirstName;
-                existing.LastName = user.LastName;
-                existing.UpdatedAt = DateTime.UtcNow;
-            }
-
-            await this.db.SaveChangesAsync();
-        }
-
-        private async Task LogChat(Chat chat)
-        {
-            ChatEntity existing = this.db.Chats.Find(chat.Id);
-
-            if (existing == null)
-            {
-                ChatEntity entity = new ChatEntity()
-                {
-                    Id = chat.Id,
-                    Type = chat.Type.ToString(),
-                    Title = chat.Title,
-                    Username = chat.Username,
-                    FirstName = chat.FirstName,
-                    LastName = chat.LastName,
-                    UpdatedAt = DateTime.UtcNow
-                };
-
-                this.db.Add(entity);
-            }
-            else
-            {
-                existing.Type = chat.Type.ToString();
-                existing.Title = chat.Title;
-                existing.Username = chat.Username;
-                existing.FirstName = chat.FirstName;
-                existing.LastName = chat.LastName;
-                existing.UpdatedAt = DateTime.UtcNow;
-            }
-
-            await this.db.SaveChangesAsync();
-        }
-
-        private Task LogUsage(
-            long chatId,
-            RequestType requestType,
-            AvailabilityType availabilityType,
-            Department dep)
-        {
-            LogEntity log = new LogEntity()
-            {
-                At = DateTime.UtcNow,
-                Chat = this.db.Chats.Find(chatId),
-                RequestType = requestType,
-                AvailabilityType = availabilityType,
-                Department = dep.Slug
-            };
-
-            this.db.Logs.Add(log);
-
-            return this.db.SaveChangesAsync();
         }
     }
 }

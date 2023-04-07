@@ -6,9 +6,7 @@ A previous version of this bot was developed in Go and has been available for ab
 
 ## Requirements
 
-MySQL is required for the bot to work. Data about users and groups will be stored in the database. The application is tested to work with **MySQL 8.0.15.**
-
-When running the application, database migrations are automatically applied.
+MongoDB is required for the bot to work. Data about users and groups will be stored in the database.
 
 ## Configuration
 
@@ -25,7 +23,7 @@ Choose one of the following methods:
 Requirements:
 
 - .NET 6.0 SDK is installed
-- MySQL is running on the host and port specified in the `appsettings.json` file
+- MongoDB is running on the host and port specified in the `appsettings.json` file
 - The `LocusPocusBot/bin/Debug/net6.0` directory contains the `appsettings.json` file
 
 Run with the nice green button.
@@ -35,7 +33,7 @@ Run with the nice green button.
 Requirements:
 
 - .NET 6.0 SDK is installed
-- MySQL is running on the host and port specified in the `appsettings.json` file
+- MongoDB is running on the host and port specified in the `appsettings.json` file
 - The `LocusPocusBot` directory contains the `appsettings.json` file
 
 Run with the dotnet CLI by executing:
@@ -47,7 +45,7 @@ dotnet run
 
 ### Docker Compose
 
-A basic development Docker Compose file (not including MySQL) would look like this:
+A basic development Docker Compose file (not including MongoDB) would look like this:
 
 ```yaml
 version: '3'

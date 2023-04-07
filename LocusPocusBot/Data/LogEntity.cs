@@ -1,21 +1,19 @@
 ﻿using LocusPocusBot.Rooms;
 using System;
-using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson;
 
 namespace LocusPocusBot.Data
 {
     public class LogEntity
     {
-        public uint Id { get; set; }
+        public ObjectId Id { get; set; }
 
-        [Required]
-        public ChatEntity Chat { get; set; }
-        
+        public long ChatId { get; set; }
+
         public DateTime At { get; set; }
 
         public RequestType RequestType { get; set; }
 
-        [Required]
         public string Department { get; set; }
 
         public AvailabilityType AvailabilityType { get; set; }
