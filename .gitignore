@@ -4,3 +4,4 @@ obj
 appsettings.json
 *.sql
 mongodb-migration
+.DS_Store
